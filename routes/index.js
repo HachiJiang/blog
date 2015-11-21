@@ -51,23 +51,23 @@ router.get(version + '/articles/status:status_id/page:page_idx', function(req, r
 });
 
 /* GET single article by id */
-router.get(version + '/article/:id', function(req, res, next) {
-    var id = req.params.id;
+router.get(version + '/article/:article_id', function(req, res, next) {
+    var article_id = req.params.article_id;
 
     console.log(req.params);
 
-    model.getArticleById(id, function(err, json_str) {
+    model.getArticleById(article_id, function(err, json_str) {
         res.send(json_str);
     });
 });
 
 /* GET articles by tag */
-router.get(version + '/articles/tag/:tag_name/page:page_idx', function(req, res, next) {
+router.get(version + '/articles/tag/:tag_id/page:page_idx', function(req, res, next) {
     var params = req.params,
         page_idx = params.page_idx,
-        tag_name = params.tag_name;
+        tag_id = params.tag_id;
 
-    model.getArticlesByTag(tag_name, page_idx, function(err, json_str) {
+    model.getArticlesByTag(tag_id, page_idx, function(err, json_str) {
         res.send(json_str);
     });
 });

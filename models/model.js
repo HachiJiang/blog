@@ -2,7 +2,7 @@ var mysql = require('mysql');
 var async = require('async');
 var db = require('./db');
 var pool = mysql.createPool(db.setting);
-var unit = 2; // article count in each page
+var unit = 10; // article count in each page
 var map_limit = 10; // map limit count
 var sql_tpl_artciles = 'SELECT tbl_articles.article_id as article_id,article_title,category_name,article_date_created,article_date_modified,user_name,status_name,article_content,article_statistics FROM tbl_articles LEFT JOIN (tbl_categories) ON (tbl_articles.category_id=tbl_categories.category_id) LEFT JOIN (tbl_users) ON (tbl_articles.user_id=tbl_users.user_id) JOIN tbl_status ON (tbl_articles.status_id=tbl_status.status_id)';
 
@@ -52,7 +52,7 @@ exports.getArticlesByStatus = function(status_id, page_idx, resCalbk) {
  * @return null
  */
 exports.getArticleById = function(article_id, resCalbk) {
-    var sql = sql_tpl_artciles + ' WHERE tbl_articles.article_id="' + article_id;
+    var sql = sql_tpl_artciles + ' WHERE tbl_articles.article_id="' + article_id + '"';
     console.log('sql: ' + sql);
     _sendArticles(sql, resCalbk);
 };
@@ -88,7 +88,7 @@ exports.getArticlesByTag = function(tag_id, page_idx, resCalbk) {
                 sql += idArr.join(',') + ')';
                 _sendArticles(sql, resCalbk);
             } else {
-                resCalbk(err, idArr);
+                resCalbk(err, _generateResJson(idArr));
             }
             connection.release();
         });
@@ -131,18 +131,10 @@ exports.getCategories = function(resCalbk) {
     _achieveData(sql, resCalbk);
 };
 
-// testing
-exports.test = function(resCalbk) {
-    var query = 'SELECT tbl_articles.article_id as article_id,article_title,category_name,article_date_created,article_date_modified,user_name,status_name,article_content,article_statistics FROM tbl_articles WHERE tbl_articles.article_id = 1 LEFT JOIN (tbl_categories) ON (tbl_articles.category_id=tbl_categories.category_id) LEFT JOIN (tbl_users) ON (tbl_articles.user_id=tbl_users.user_id) JOIN tbl_status ON (tbl_articles.status_id=tbl_status.status_id)';
-    console.log('query: ' + query);
-    _achieveData(query, resCalbk);
-};
-
-
 function _errorHandler(err, results, resCalbk) {
     if (err) {
         console.err('error connecting' + err.stack);
-        resCalbk(err, results);
+        resCalbk(err, _generateResJson(results));
         return;
     }
 }
@@ -158,7 +150,7 @@ function _achieveData(sql, cb) {
         // Use the connection
         connection.query(sql, function(err, results) {
             _errorHandler(err, results, cb);
-            cb(null, results);
+            cb(null,_generateResJson(results));
         });
     });
 }
@@ -204,7 +196,7 @@ function _sendArticles(sql, resCalbk) {
         collect(sql, function(err, results) {
             _errorHandler(err, results, resCalbk);
             connection.release();
-            resCalbk(null, results);
+            resCalbk(null, _generateResJson(results));
         });
     });
 }
@@ -229,4 +221,12 @@ function _queryLimitedByPage(page_idx) {
 
     var offset = page_idx * unit;
     return ' LIMIT ' + offset + ',' + unit;
+}
+
+function _generateResJson(data) {
+    return {
+        'success': true,
+        'message': 'Achieve data successfully',
+        'data': data
+    };
 }

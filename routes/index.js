@@ -6,15 +6,15 @@ var version = '/v1';
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index', {
-        title: 'Express'
+        title: 'Blog of Swordarchor'
     });
 });
 
 /* GET articles (by page index) */
 router.get(version + '/articles', function(req, res, next) {
-    res.redirect(version + '/articles/page0');
+    res.redirect(version + '/articles/page/0');
 });
-router.get(version + '/articles/page:page_idx', function(req, res, next) {
+router.get(version + '/articles/page/:page_idx', function(req, res, next) {
     var page_idx = req.params.page_idx;
 
     console.log(req.params);
@@ -25,7 +25,7 @@ router.get(version + '/articles/page:page_idx', function(req, res, next) {
 });
 
 /* GET articles by category id */
-router.get(version + '/articles/category:category_id/page:page_idx', function(req, res, next) {
+router.get(version + '/articles/category/:category_id/page/:page_idx', function(req, res, next) {
     var params = req.params,
         page_idx = params.page_idx,
         category_id = params.category_id;
@@ -38,7 +38,7 @@ router.get(version + '/articles/category:category_id/page:page_idx', function(re
 });
 
 /* GET articles by status */
-router.get(version + '/articles/status:status_id/page:page_idx', function(req, res, next) {
+router.get(version + '/articles/status/:status_id/page/:page_idx', function(req, res, next) {
     var params = req.params,
         page_idx = params.page_idx,
         status_id = params.status_id;
@@ -62,7 +62,7 @@ router.get(version + '/article/:article_id', function(req, res, next) {
 });
 
 /* GET articles by tag */
-router.get(version + '/articles/tag/:tag_id/page:page_idx', function(req, res, next) {
+router.get(version + '/articles/tag/:tag_id/page/:page_idx', function(req, res, next) {
     var params = req.params,
         page_idx = params.page_idx,
         tag_id = params.tag_id;
@@ -73,7 +73,7 @@ router.get(version + '/articles/tag/:tag_id/page:page_idx', function(req, res, n
 });
 
 /* GET articles by Year/Month */
-router.get(version + '/articles/year:year/month:month/page:page_idx', function(req, res, next) {
+router.get(version + '/articles/year/:year/month/:month/page/:page_idx', function(req, res, next) {
     var params = req.params,
         page_idx = params.page_idx,
         year = params.year,

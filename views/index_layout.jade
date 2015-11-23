@@ -1,0 +1,55 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title= title_text + ' - ' + description
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    //- link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/jquery.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+        
+  body
+    div(class='site-top')
+      nav(id='site-navigation', class='navbar navbar-default navbar-static-top')
+        div(class='container')
+          div(class='navbar-header')
+            button(type='button', class='navbar-toggle collapsed', data-toggle='collapse', data-target='#navbar', aria-expanded='false', aria-controls='navbar')
+              span(class='sr-only') Toggle navigation
+              span(class='icon-bar')
+              span(class='icon-bar')
+              span(class='icon-bar')
+            a(class='navbar-brand', href='#') Web小窝
+
+          div(id='navbar', class='collapse navbar-collapse')
+            ul(class='nav navbar-nav')
+              li(class='active')
+                a(href='#') 首页
+                  span(class='sr-only') (current)
+              li
+                a(href='#') 头脑风暴
+              li
+                a(href='#') About ME
+            ul(class="nav navbar-nav navbar-right")
+              li
+                a(href='#') Sign in
+            form(class='nav navbar-form navbar-right', role='search')
+              div(class='form-group')
+                input(type='text', class='form-control', placeholder='Search')
+
+    header(class='site-header') 
+      p= title_text
+      p= description
+
+    div(id='content' class='site-content')
+      div(class='container')
+        div(class='row')
+          div(id='main' class='col-md-9') main
+
+          div(id='sidebar' class='col-md-3') sidebar
+
+
+
+    footer(class='site-footer') site-footer
+    //- block content

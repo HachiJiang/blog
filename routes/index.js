@@ -6,7 +6,8 @@ var version = '/v1';
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index', {
-        title: 'Blog of Swordarchor'
+        title_text: 'Swordarchor',
+        description: '和冬瓜一起努力'
     });
 });
 

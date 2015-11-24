@@ -1,8 +1,77 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-a {
-  color: #00B7FF;
+.navbar {
+    margin-bottom: 0;
+}
+
+.site-header {
+    background: #bed4df;
+    text-align: center;
+}
+
+.site-header h1 {
+    color: rgba(255, 255, 255, 0.9);
+    /*font-size: 7.0rem;*/
+    font-weight: 900;
+    line-height: 1em;
+    margin: 0;
+}
+
+.site-header h4 {
+    color: #789;
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.8;
+    margin-top: 0.9em;
+}
+
+.site-top,
+.site-footer {
+    text-align: center;
+    background: #323e4e;
+}
+
+#site-navigation .navbar-header a {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+#site-navbar a,
+.site-footer {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.site-footer {
+    margin: 0;
+    padding-top: 1.2em;
+    padding-bottom: 1em;
+    line-height: 1em;
+}
+
+.site-content {
+    padding: 50px 0;
+}
+
+.content-area {
+    padding: 0 15px;
+}
+
+#sidebar .widget {
+    background: #f7f7f7;
+    padding: 20px 30px;
+    line-height: 1.6em;
+    margin: 0 0 1.5em;
+    word-wrap: break-word;
+}
+
+.widget-title {
+    border-bottom: 5px solid #dfdfdf;
+    font-size: 1.2em;
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin: 0 0 10px;
+    padding-bottom: 10px;
+    text-transform: uppercase;
 }

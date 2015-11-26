@@ -14,9 +14,15 @@ var sql_tpl_artciles = 'SELECT tbl_articles.article_id as article_id,article_tit
  * @return null
  */
 exports.getArticles = function(page_idx, resCalbk) {
-    var sql = sql_tpl_artciles + _queryOrder() + _queryLimitedByPage(page_idx);
+    var sql = sql_tpl_artciles + _queryOrder() + _queryLimitedByPage(page_idx),
+        data = {
+            'info': {
+                'page_idx': page_idx
+            },
+            'list': []
+        };
     console.log('query: ' + sql);
-    _sendArticles(sql, resCalbk);
+    _sendArticles(sql, data, resCalbk);
 };
 
 /**
@@ -27,9 +33,16 @@ exports.getArticles = function(page_idx, resCalbk) {
  * @return null
  */
 exports.getArticlesByCategory = function(category_id, page_idx, resCalbk) {
-    var sql = sql_tpl_artciles + ' WHERE tbl_categories.category_id="' + category_id + '"' + _queryOrder() + _queryLimitedByPage(page_idx);
+    var sql = sql_tpl_artciles + ' WHERE tbl_categories.category_id="' + category_id + '"' + _queryOrder() + _queryLimitedByPage(page_idx),
+        data = {
+            'info': {
+                'category_id': category_id,
+                'page_idx': page_idx
+            },
+            'list': []
+        };
     console.log('sql: ' + sql);
-    _sendArticles(sql, resCalbk);
+    _sendArticles(sql, data, resCalbk);
 };
 
 /**
@@ -40,9 +53,16 @@ exports.getArticlesByCategory = function(category_id, page_idx, resCalbk) {
  * @return null
  */
 exports.getArticlesByStatus = function(status_id, page_idx, resCalbk) {
-    var sql = sql_tpl_artciles + ' WHERE tbl_status.status_id="' + status_id + '"' + _queryOrder() + _queryLimitedByPage(page_idx);
+    var sql = sql_tpl_artciles + ' WHERE tbl_status.status_id="' + status_id + '"' + _queryOrder() + _queryLimitedByPage(page_idx),
+        data = {
+            'info': {
+                'status_id': status_id,
+                'page_idx': page_idx
+            },
+            'list': []
+        };
     console.log('sql: ' + sql);
-    _sendArticles(sql, resCalbk);
+    _sendArticles(sql, data, resCalbk);
 };
 
 /**
@@ -52,9 +72,15 @@ exports.getArticlesByStatus = function(status_id, page_idx, resCalbk) {
  * @return null
  */
 exports.getArticleById = function(article_id, resCalbk) {
-    var sql = sql_tpl_artciles + ' WHERE tbl_articles.article_id="' + article_id + '"';
+    var sql = sql_tpl_artciles + ' WHERE tbl_articles.article_id="' + article_id + '"',
+        data = {
+            'info': {
+                'article_id': article_id
+            },
+            'list': []
+        };
     console.log('sql: ' + sql);
-    _sendArticles(sql, resCalbk);
+    _sendArticles(sql, data, resCalbk);
 };
 
 /**
@@ -79,16 +105,23 @@ exports.getArticlesByTag = function(tag_id, page_idx, resCalbk) {
 
         collect(sql_0, function(err, articleIdArr) {
             var sql = sql_tpl_artciles + ' WHERE tbl_articles.article_id in(',
-                idArr = [];
+                idArr = [],
+                data = {
+                    'info': {
+                        'tag_id': tag_id,
+                        'page_idx': page_idx
+                    },
+                    'list': []
+                };
 
             if (articleIdArr.length !== 0) {
                 for (var i = 0, il = articleIdArr.length; i < il; i++) {
                     idArr.push(articleIdArr[i].article_id);
                 }
                 sql += idArr.join(',') + ')';
-                _sendArticles(sql, resCalbk);
+                _sendArticles(sql, data, resCalbk);
             } else {
-                resCalbk(err, _generateResJson(idArr));
+                resCalbk(err, _generateSuccessResJson(data));
             }
             connection.release();
         });
@@ -104,9 +137,17 @@ exports.getArticlesByTag = function(tag_id, page_idx, resCalbk) {
  * @return null
  */
 exports.getArticlesByDate = function(year, month, page_idx, resCalbk) {
-    var sql = sql_tpl_artciles + ' WHERE article_date_created LIKE "' + year + '-' + month + '%"' + _queryOrder() + _queryLimitedByPage(page_idx);
+    var sql = sql_tpl_artciles + ' WHERE article_date_created LIKE "' + year + '-' + month + '%"' + _queryOrder() + _queryLimitedByPage(page_idx),
+        data = {
+            'info': {
+                'year': year,
+                'month': month,
+                'page_idx': page_idx
+            },
+            'list': []
+        };
     console.log('sql: ' + sql);
-    _sendArticles(sql, resCalbk);
+    _sendArticles(sql, data, resCalbk);
 };
 
 /**
@@ -115,9 +156,12 @@ exports.getArticlesByDate = function(year, month, page_idx, resCalbk) {
  * @return null
  */
 exports.getTags = function(resCalbk) {
-    var sql = 'SELECT * FROM tbl_tags';
+    var sql = 'SELECT * FROM tbl_tags',
+        data = {
+            'list': []
+        };
     console.log('sql: ' + sql);
-    _achieveData(sql, resCalbk);
+    _achieveData(sql, data, resCalbk);
 };
 
 /**
@@ -126,15 +170,18 @@ exports.getTags = function(resCalbk) {
  * @return {[type]}            [description]
  */
 exports.getCategories = function(resCalbk) {
-    var sql = 'SELECT * FROM tbl_categories';
+    var sql = 'SELECT * FROM tbl_categories',
+        data = {
+            'list': []
+        };
     console.log('sql: ' + sql);
-    _achieveData(sql, resCalbk);
+    _achieveData(sql, data, resCalbk);
 };
 
 function _errorHandler(err, results, resCalbk) {
     if (err) {
         console.err('error connecting' + err.stack);
-        resCalbk(err, _generateResJson(results));
+        resCalbk(err, _generateErrorResJson(results));
         return;
     }
 }
@@ -142,15 +189,17 @@ function _errorHandler(err, results, resCalbk) {
 /**
  * common method: achieve data from database
  * @param  {String}   query    [mysql sentence]
+ * @param  {[type]}   data         [description]
  * @param  {Function} cb 
  * @return null
  */
-function _achieveData(sql, cb) {
+function _achieveData(sql, data, cb) {
     pool.getConnection(function(err, connection) {
         // Use the connection
         connection.query(sql, function(err, results) {
             _errorHandler(err, results, cb);
-            cb(null,_generateResJson(results));
+            data.list = results;
+            cb(null, _generateSuccessResJson(data));
         });
     });
 }
@@ -158,10 +207,11 @@ function _achieveData(sql, cb) {
 /**
  * Collect articles with complete info, including reading foreign keys
  * @param  {[type]}   sql          [description]
+ * @param  {[type]}   data         [description]
  * @param  {Function} resCalbk     [description]
  * @return {[type]}                [description]    
  */
-function _sendArticles(sql, resCalbk) {
+function _sendArticles(sql, data, resCalbk) {
     pool.getConnection(function(err, connection) {
         var getArticleArr = function(sql, cb1) {
             connection.query(sql, function(err, results) {
@@ -193,10 +243,11 @@ function _sendArticles(sql, resCalbk) {
         };
 
         var collect = async.compose(addArticleTags, getArticleArr);
-        collect(sql, function(err, results) {
-            _errorHandler(err, results, resCalbk);
+        collect(sql, function(err, articleInfoArr) {
+            _errorHandler(err, articleInfoArr, resCalbk);
             connection.release();
-            resCalbk(null, _generateResJson(results));
+            data.list = articleInfoArr;
+            resCalbk(null, _generateSuccessResJson(data));
         });
     });
 }
@@ -223,10 +274,19 @@ function _queryLimitedByPage(page_idx) {
     return ' LIMIT ' + offset + ',' + unit;
 }
 
-function _generateResJson(data) {
+function _generateSuccessResJson(data) {
+    var msg = (data && data.list && data.list.length > 0) ? 'Achieve data successfully' : 'No data returned';
     return {
         'success': true,
-        'message': 'Achieve data successfully',
+        'message': msg,
+        'data': data
+    };
+}
+
+function _generateErrorResJson(data) {
+    return {
+        'success': false,
+        'message': 'Fail to achieve data from database',
         'data': data
     };
 }

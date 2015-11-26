@@ -1,68 +1,73 @@
 var apitest = require('./apitest');
 
 var apiArr = [
-    /* GET home page. */
+    /* GET articles. */
     {
         url: 'http://localhost:8080/v1/articles',
         expect: {
             success: true,
             message: "Achieve data successfully",
-            data: [{
-                article_id: 3,
-                article_title: "test4",
-                category_name: "Life",
-                article_date_created: "2015-11-16T16:00:00.000Z",
-                article_date_modified: "2015-11-17T16:00:00.000Z",
-                user_name: "guai",
-                status_name: "posted",
-                article_content: "ttttttttttttttttttttttt",
-                article_statistics: null,
-                tags: "mojo"
-            }, {
-                article_id: 2,
-                article_title: "test3",
-                category_name: "Life",
-                article_date_created: "2015-11-15T16:00:00.000Z",
-                article_date_modified: "2015-11-15T16:00:00.000Z",
-                user_name: "guai",
-                status_name: "posted",
-                article_content: "zzzzzzzzzzzzzzzzzzzzzz",
-                article_statistics: null,
-                tags: "mongodb,javascript,php"
-            }, {
-                article_id: 1,
-                article_title: "test2",
-                category_name: "Study",
-                article_date_created: "2015-11-11T16:00:00.000Z",
-                article_date_modified: "2015-11-11T16:00:00.000Z",
-                user_name: "guai",
-                status_name: "draft",
-                article_content: "yyyyyyyyyyyyyyyyyyyyyyy",
-                article_statistics: null,
-                tags: "javascript,php"
-            }, {
-                article_id: 6,
-                article_title: "test1",
-                category_name: "Study",
-                article_date_created: "2015-11-08T16:00:00.000Z",
-                article_date_modified: "2015-11-09T16:00:00.000Z",
-                user_name: "hansi",
-                status_name: "draft",
-                article_content: "xxxxxxxxxxxxxxxxxxxxx",
-                article_statistics: null,
-                tags: ""
-            }, {
-                article_id: 7,
-                article_title: "test7",
-                category_name: "Study",
-                article_date_created: "2015-10-12T16:00:00.000Z",
-                article_date_modified: "2015-10-19T16:00:00.000Z",
-                user_name: "hansi",
-                status_name: "posted",
-                article_content: "kkkkkk",
-                article_statistics: null,
-                tags: ""
-            }]
+            data: {
+                info: {
+                    page_idx: "0"
+                },
+                list: [{
+                    article_id: 3,
+                    article_title: "test4",
+                    category_name: "Life",
+                    article_date_created: "2015-11-16T16:00:00.000Z",
+                    article_date_modified: "2015-11-17T16:00:00.000Z",
+                    user_name: "guai",
+                    status_name: "posted",
+                    article_content: "ttttttttttttttttttttttt",
+                    article_statistics: null,
+                    tags: "mojo"
+                }, {
+                    article_id: 2,
+                    article_title: "test3",
+                    category_name: "Life",
+                    article_date_created: "2015-11-15T16:00:00.000Z",
+                    article_date_modified: "2015-11-15T16:00:00.000Z",
+                    user_name: "guai",
+                    status_name: "posted",
+                    article_content: "zzzzzzzzzzzzzzzzzzzzzz",
+                    article_statistics: null,
+                    tags: "mongodb,javascript,php"
+                }, {
+                    article_id: 1,
+                    article_title: "test2",
+                    category_name: "Study",
+                    article_date_created: "2015-11-11T16:00:00.000Z",
+                    article_date_modified: "2015-11-11T16:00:00.000Z",
+                    user_name: "guai",
+                    status_name: "draft",
+                    article_content: "yyyyyyyyyyyyyyyyyyyyyyy",
+                    article_statistics: null,
+                    tags: "javascript,php"
+                }, {
+                    article_id: 6,
+                    article_title: "test1",
+                    category_name: "Study",
+                    article_date_created: "2015-11-08T16:00:00.000Z",
+                    article_date_modified: "2015-11-09T16:00:00.000Z",
+                    user_name: "hansi",
+                    status_name: "draft",
+                    article_content: "xxxxxxxxxxxxxxxxxxxxx",
+                    article_statistics: null,
+                    tags: ""
+                }, {
+                    article_id: 7,
+                    article_title: "test7",
+                    category_name: "Study",
+                    article_date_created: "2015-10-12T16:00:00.000Z",
+                    article_date_modified: "2015-10-19T16:00:00.000Z",
+                    user_name: "hansi",
+                    status_name: "posted",
+                    article_content: "kkkkkk",
+                    article_statistics: null,
+                    tags: ""
+                }]
+            }
         }
     },
     /* GET articles (by page index) */
@@ -70,8 +75,13 @@ var apiArr = [
         url: 'http://localhost:8080/v1/articles/page/1',
         expect: {
             success: true,
-            message: "Achieve data successfully",
-            data: []
+            message: "No data returned",
+            data: {
+                info: {
+                    page_idx: "1"
+                },
+                list: []
+            }
         }
     },
     /* GET articles by category id */
@@ -80,29 +90,35 @@ var apiArr = [
         expect: {
             success: true,
             message: "Achieve data successfully",
-            data: [{
-                article_id: 3,
-                article_title: "test4",
-                category_name: "Life",
-                article_date_created: "2015-11-16T16:00:00.000Z",
-                article_date_modified: "2015-11-17T16:00:00.000Z",
-                user_name: "guai",
-                status_name: "posted",
-                article_content: "ttttttttttttttttttttttt",
-                article_statistics: null,
-                tags: "mojo"
-            }, {
-                article_id: 2,
-                article_title: "test3",
-                category_name: "Life",
-                article_date_created: "2015-11-15T16:00:00.000Z",
-                article_date_modified: "2015-11-15T16:00:00.000Z",
-                user_name: "guai",
-                status_name: "posted",
-                article_content: "zzzzzzzzzzzzzzzzzzzzzz",
-                article_statistics: null,
-                tags: "mongodb,javascript,php"
-            }]
+            data: {
+                info: {
+                    category_id: "2",
+                    page_idx: "0"
+                },
+                list: [{
+                    article_id: 3,
+                    article_title: "test4",
+                    category_name: "Life",
+                    article_date_created: "2015-11-16T16:00:00.000Z",
+                    article_date_modified: "2015-11-17T16:00:00.000Z",
+                    user_name: "guai",
+                    status_name: "posted",
+                    article_content: "ttttttttttttttttttttttt",
+                    article_statistics: null,
+                    tags: "mojo"
+                }, {
+                    article_id: 2,
+                    article_title: "test3",
+                    category_name: "Life",
+                    article_date_created: "2015-11-15T16:00:00.000Z",
+                    article_date_modified: "2015-11-15T16:00:00.000Z",
+                    user_name: "guai",
+                    status_name: "posted",
+                    article_content: "zzzzzzzzzzzzzzzzzzzzzz",
+                    article_statistics: null,
+                    tags: "mongodb,javascript,php"
+                }]
+            }
         }
     },
     /* GET articles by status */
@@ -111,29 +127,35 @@ var apiArr = [
         expect: {
             success: true,
             message: "Achieve data successfully",
-            data: [{
-                article_id: 1,
-                article_title: "test2",
-                category_name: "Study",
-                article_date_created: "2015-11-11T16:00:00.000Z",
-                article_date_modified: "2015-11-11T16:00:00.000Z",
-                user_name: "guai",
-                status_name: "draft",
-                article_content: "yyyyyyyyyyyyyyyyyyyyyyy",
-                article_statistics: null,
-                tags: "javascript,php"
-            }, {
-                article_id: 6,
-                article_title: "test1",
-                category_name: "Study",
-                article_date_created: "2015-11-08T16:00:00.000Z",
-                article_date_modified: "2015-11-09T16:00:00.000Z",
-                user_name: "hansi",
-                status_name: "draft",
-                article_content: "xxxxxxxxxxxxxxxxxxxxx",
-                article_statistics: null,
-                tags: ""
-            }]
+            data: {
+                info: {
+                    status_id: "1",
+                    page_idx: "0"
+                },
+                list: [{
+                    article_id: 1,
+                    article_title: "test2",
+                    category_name: "Study",
+                    article_date_created: "2015-11-11T16:00:00.000Z",
+                    article_date_modified: "2015-11-11T16:00:00.000Z",
+                    user_name: "guai",
+                    status_name: "draft",
+                    article_content: "yyyyyyyyyyyyyyyyyyyyyyy",
+                    article_statistics: null,
+                    tags: "javascript,php"
+                }, {
+                    article_id: 6,
+                    article_title: "test1",
+                    category_name: "Study",
+                    article_date_created: "2015-11-08T16:00:00.000Z",
+                    article_date_modified: "2015-11-09T16:00:00.000Z",
+                    user_name: "hansi",
+                    status_name: "draft",
+                    article_content: "xxxxxxxxxxxxxxxxxxxxx",
+                    article_statistics: null,
+                    tags: ""
+                }]
+            }
         }
     },
     /* GET single article by id */
@@ -142,18 +164,23 @@ var apiArr = [
         expect: {
             success: true,
             message: "Achieve data successfully",
-            data: [{
-                article_id: 1,
-                article_title: "test2",
-                category_name: "Study",
-                article_date_created: "2015-11-11T16:00:00.000Z",
-                article_date_modified: "2015-11-11T16:00:00.000Z",
-                user_name: "guai",
-                status_name: "draft",
-                article_content: "yyyyyyyyyyyyyyyyyyyyyyy",
-                article_statistics: null,
-                tags: "javascript,php"
-            }]
+            data: {
+                info: {
+                    article_id: "1"
+                },
+                list: [{
+                    article_id: 1,
+                    article_title: "test2",
+                    category_name: "Study",
+                    article_date_created: "2015-11-11T16:00:00.000Z",
+                    article_date_modified: "2015-11-11T16:00:00.000Z",
+                    user_name: "guai",
+                    status_name: "draft",
+                    article_content: "yyyyyyyyyyyyyyyyyyyyyyy",
+                    article_statistics: null,
+                    tags: "javascript,php"
+                }]
+            }
         }
     },
     /* GET articles by tag */
@@ -162,29 +189,35 @@ var apiArr = [
         expect: {
             success: true,
             message: "Achieve data successfully",
-            data: [{
-                article_id: 1,
-                article_title: "test2",
-                category_name: "Study",
-                article_date_created: "2015-11-11T16:00:00.000Z",
-                article_date_modified: "2015-11-11T16:00:00.000Z",
-                user_name: "guai",
-                status_name: "draft",
-                article_content: "yyyyyyyyyyyyyyyyyyyyyyy",
-                article_statistics: null,
-                tags: "javascript,php"
-            }, {
-                article_id: 2,
-                article_title: "test3",
-                category_name: "Life",
-                article_date_created: "2015-11-15T16:00:00.000Z",
-                article_date_modified: "2015-11-15T16:00:00.000Z",
-                user_name: "guai",
-                status_name: "posted",
-                article_content: "zzzzzzzzzzzzzzzzzzzzzz",
-                article_statistics: null,
-                tags: "mongodb,javascript,php"
-            }]
+            data: {
+                info: {
+                    tag_id: "1",
+                    page_idx: "0"
+                },
+                list: [{
+                    article_id: 1,
+                    article_title: "test2",
+                    category_name: "Study",
+                    article_date_created: "2015-11-11T16:00:00.000Z",
+                    article_date_modified: "2015-11-11T16:00:00.000Z",
+                    user_name: "guai",
+                    status_name: "draft",
+                    article_content: "yyyyyyyyyyyyyyyyyyyyyyy",
+                    article_statistics: null,
+                    tags: "javascript,php"
+                }, {
+                    article_id: 2,
+                    article_title: "test3",
+                    category_name: "Life",
+                    article_date_created: "2015-11-15T16:00:00.000Z",
+                    article_date_modified: "2015-11-15T16:00:00.000Z",
+                    user_name: "guai",
+                    status_name: "posted",
+                    article_content: "zzzzzzzzzzzzzzzzzzzzzz",
+                    article_statistics: null,
+                    tags: "mongodb,javascript,php"
+                }]
+            }
         }
     },
     /* GET articles by Year/Month */
@@ -193,18 +226,25 @@ var apiArr = [
         expect: {
             success: true,
             message: "Achieve data successfully",
-            data: [{
-                article_id: 7,
-                article_title: "test7",
-                category_name: "Study",
-                article_date_created: "2015-10-12T16:00:00.000Z",
-                article_date_modified: "2015-10-19T16:00:00.000Z",
-                user_name: "hansi",
-                status_name: "posted",
-                article_content: "kkkkkk",
-                article_statistics: null,
-                tags: ""
-            }]
+            data: {
+                info: {
+                    year: "2015",
+                    month: "10",
+                    page_idx: "0"
+                },
+                list: [{
+                    article_id: 7,
+                    article_title: "test7",
+                    category_name: "Study",
+                    article_date_created: "2015-10-12T16:00:00.000Z",
+                    article_date_modified: "2015-10-19T16:00:00.000Z",
+                    user_name: "hansi",
+                    status_name: "posted",
+                    article_content: "kkkkkk",
+                    article_statistics: null,
+                    tags: ""
+                }]
+            }
         }
     },
     /* GET tag list */
@@ -213,23 +253,25 @@ var apiArr = [
         expect: {
             success: true,
             message: "Achieve data successfully",
-            data: [{
-                tag_id: 1,
-                tag_name: "javascript",
-                tag_article_num: null
-            }, {
-                tag_id: 2,
-                tag_name: "php",
-                tag_article_num: null
-            }, {
-                tag_id: 3,
-                tag_name: "mojo",
-                tag_article_num: null
-            }, {
-                tag_id: 6,
-                tag_name: "mongodb",
-                tag_article_num: null
-            }]
+            data: {
+                list: [{
+                    tag_id: 1,
+                    tag_name: "javascript",
+                    tag_article_num: null
+                }, {
+                    tag_id: 2,
+                    tag_name: "php",
+                    tag_article_num: null
+                }, {
+                    tag_id: 3,
+                    tag_name: "mojo",
+                    tag_article_num: null
+                }, {
+                    tag_id: 6,
+                    tag_name: "mongodb",
+                    tag_article_num: null
+                }]
+            }
         }
     },
     /* GET category list */
@@ -238,19 +280,21 @@ var apiArr = [
         expect: {
             success: true,
             message: "Achieve data successfully",
-            data: [{
-                category_id: 1,
-                category_name: "Study",
-                category_article_num: 0
-            }, {
-                category_id: 2,
-                category_name: "Life",
-                category_article_num: 0
-            }, {
-                category_id: 3,
-                category_name: "Work",
-                category_article_num: 0
-            }]
+            data: {
+                list: [{
+                    category_id: 1,
+                    category_name: "Study",
+                    category_article_num: 0
+                }, {
+                    category_id: 2,
+                    category_name: "Life",
+                    category_article_num: 0
+                }, {
+                    category_id: 3,
+                    category_name: "Work",
+                    category_article_num: 0
+                }]
+            }
         }
     },
 ];

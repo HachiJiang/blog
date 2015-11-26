@@ -1,13 +1,55 @@
 var express = require('express');
+var async = require('async');
 var router = express.Router();
 var model = require('../models/model');
 var version = '/v1';
+var map_limit = 10; // map limit count
 
-/* GET home page. */
+/* GET home page */
 router.get('/', function(req, res, next) {
-    res.render('index', {
-        blog_title: 'SWORDARCHOR',
-        blog_desc: '和冬瓜一起努力'
+    async.parallel([
+        // get article list
+        function(cb) {
+            var page_idx = '0';
+            model.getArticles(page_idx, function(err, json_str) {
+                var article_list = _extractListFromRes(json_str);
+                cb(null, article_list);
+            });
+        },
+        // get category list
+        function(cb) {
+            model.getCategories(function(err, json_str) {
+                var category_list = _extractListFromRes(json_str);
+                cb(null, category_list);
+            });
+        },
+        // get tag list
+        function(cb) {
+            model.getTags(function(err, json_str) {
+                var tag_list = _extractListFromRes(json_str);
+                cb(null, tag_list);
+            });
+        }
+    ], function(err, results) {
+        res.render('index', {
+            'title': 'SWORDARCHOR',
+            'connStr': '-',
+            'desc': '和冬瓜一起努力',
+            'article_list': results[0],
+            'widgetsInfo': {
+                'cat_list': results[1],
+                'tag_list': results[2]
+            }
+        });
+    });
+});
+
+/* GET admin page */
+router.get('/admin', function(req, res, next) {
+    res.render('index_admin', {
+        'title': 'SWORDARCHOR',
+        'connStr': '>',
+        'desc': '后台管理'
     });
 });
 
@@ -31,7 +73,7 @@ router.get(version + '/articles/category/:category_id/page/:page_idx', function(
         page_idx = params.page_idx,
         category_id = params.category_id;
 
-   console.log(req.params);
+    console.log(req.params);
 
     model.getArticlesByCategory(category_id, page_idx, function(err, json_str) {
         res.send(json_str);
@@ -101,17 +143,17 @@ router.get(version + '/categories', function(req, res, next) {
 
 /* Create a new article */
 router.post(version + '/article/create', function(req, res, next) {
-    
+
 });
 
 /* Update an existing article */
 router.post(version + '/article/update/:id', function(req, res, next) {
-    
+
 });
 
 /* Delete an existing article by id */
 router.post(version + '/article/delete/:id', function(req, res, next) {
-    
+
 });
 
 
@@ -123,3 +165,13 @@ router.get(version + '/test', function(req, res, next) {
 });
 
 module.exports = router;
+
+/**
+ * Extract
+ * @param  {Object} res [description]
+ * @return {[type]}     [description]
+ */
+function _extractListFromRes(res) {
+    var data = res.data;
+    return ((res.success === true) && (data !== undefined) && (data.list !== undefined)) ? data.list : [];
+}

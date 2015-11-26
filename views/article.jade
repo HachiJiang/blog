@@ -1,19 +1,22 @@
-//- layout template of single article
+//- template of single article
 
-article(class='article')
+article(class='article')&attributes({'id': 'article-' + article.article_id})
   header(class='article-header')
     h2(class='article-title')
-      a(href=article_href) article_title
-    div(class='article_meta')
-      span(class='article_date_created')
-        a article_date_created
-      span(class='article_date_modified')
-        a article_date_modified
+      a(href='#') #{article.article_title}
+    div(class='article-meta')
+      span(class='article-created-on')
+        a
+          time(class='article-date-created')
+          time(class='updated')&attributes({'datetime': article.article_date_created}) #{article.article_date_created}
+      span(class='article-author')
+        a #{article.user_name}
 
-  div(class='article-content') article_content
-  p article_date_modified
+  div(class='article-content') #{article.article_content}
   footer(class='article-footer')
-    span(class='cat_links')
-      a article_category
-    span(class='tags_links')
-      a article_tags
+    span(class='cat-links')
+      a #{article.article_category}
+    span(class='tag-links')
+      a #{article.article_tags}
+    span(class='article-date-modified')
+      a #{article.article_date_modified}

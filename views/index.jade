@@ -1,5 +1,8 @@
-extends index_layout
+//- entry page of home
 
-//- block content
-//-   h1= title
-//-   p Welcome to #{title}
+extends layout
+
+block links
+  link(rel='stylesheet', href='/stylesheets/home.css')
+block content
+  include ./home.jade

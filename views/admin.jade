@@ -1,3 +1,29 @@
 //- template
 
 div(id='admin')
+  div(id='admin-menu-wrap')
+    h3 后台管理
+    ul(id='admin-menu')
+      li(class='admin-submenu')
+        a(class='admin-submenu-head') 日志
+        ul(class='admin-submenu-items')
+          li(class='admin-submenu-item') 所有文章
+          li(class='admin-submenu-item') 新建文章
+          li(class='admin-submenu-item') 类别
+          li(class='admin-submenu-item') 标签
+      li(class='admin-submenu')
+        a(class='admin-submenu-head') 用户
+        ul(class='admin-submenu-items')
+          li 个人信息
+          li 修改密码
+      li(class='admin-submenu')
+        a(class='admin-submenu-head') 统计
+      //- li(class='admin-submenu')
+      //-   h4(class='admin-submenu-head') 工具
+      //-   ul(class='admin-submenu-items')
+      //-     li 导入Markdown文件
+
+  div(id='admin-content')
+    - var item_name = 'admin_article_editor'
+    if item_name === 'admin_article_editor'
+     include ./admin_article_editor.jade

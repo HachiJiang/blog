@@ -1,0 +1,27 @@
+//- template of markdown eidtor
+
+div(class='article-editor')
+  h4 文章编辑
+  div
+    form(class='form-group')
+      input(class='form-control article-title', placeholder='标题')
+      div(class='article-tag-wrap')
+        btn(class='pull-left btn-tag-add')
+          a(href='#') 添加标签
+        div(class='pull-left article-tag-list')
+      div(class='pull-right article-preview')
+        btn(data-toggle='modal')
+          a(href='#') 预览
+      div(class='article-editor-toolbar')
+        button(type='button', class='btn btn-default btn-xs btn-article-pic')
+          span(class='glyphicon glyphicon-picture' aria-hidden='true')
+      textarea(rows='20', class='form-control article-content', placeholder='正文，请使用markdown语法编辑')
+  div(class='pull-right')
+    button(type='button', class='btn btn-default btn-editor-exit') 退出编辑
+    button(type='button', class='btn btn-primary btn-editor-save') 保存文章
+
+div(class='modal dialog-article-preview', tagindex='-1', role='dialog', aria-hidden='true')
+  div(class='modal-dialog modal-lg')
+    div(class='modal-content')
+      div(class='modal-body')
+        p 预览内容

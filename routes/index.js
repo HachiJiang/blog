@@ -42,6 +42,12 @@ router.get('/', function(req, res, next) {
             }
         });
     });
+
+    /*res.render('index', {
+        'title': 'SWORDARCHOR',
+        'connStr': '-',
+        'desc': '和冬瓜一起努力'
+    });*/
 });
 
 /* GET admin page */

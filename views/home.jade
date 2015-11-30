@@ -26,7 +26,7 @@ nav(id='site-navigation',class='site-top navbar navbar-default navbar-static-top
             div(class='form-group')
               input(type='text', class='form-control', placeholder='Search')
         li
-          a(href='#') Sign in
+          a(type='button', class='modal-title', data-toggle='modal', data-target='#login', href='#') Sign in
         
 //- site header
 header(class='site-header jumbotron')
@@ -35,14 +35,16 @@ header(class='site-header jumbotron')
     h4(class='site-description')= desc
 
 //- content
-div(id='content' class='site-content')
+section(id='content' class='site-content')
   div(class='container')
     div(class='row')
       div(id='primary' class='col-md-9 content-area')
-        for articleObj in article_list
-          - var article = articleObj
-           include ./article.jade
-        div(class='content-pagination')
+        div(id='content-wrap')
+          if article_list
+            for articleObj in article_list
+              - var article = articleObj
+               include ./article.jade
+        div(id='content-pagination')
           nav
             ul(class='pagination')
               li(class='disabled')
@@ -53,11 +55,27 @@ div(id='content' class='site-content')
               li(class='disabled')
                 a(href='#', aria-label='Next')
                   span(aria-hidden='true') &raquo;
-      div(id='sidebar' class='col-md-3 widget-area')
-        - var widgets = widgetsInfo
-          include ./widgets.jade
+      div(id='secondary', class='col-md-3 sidebar widget-area')
+        if widgetsInfo
+          - var widgets = widgetsInfo
+            include ./widgets.jade
 
 //- site footer
 footer(class='site-footer')
   div(class='container')
-    p Swordarchor - 在前端开发与测试的路上.
+    p Copyright (c) Swordarchor - 在前端开发的路上.
+
+div(id='login', class='modal fade', tagindex='-1', role='dialog', aria-labelledby='login-label' aria-hidden='true')
+  div(class='modal-dialog modal-sm')
+    div(class='modal-content')
+      div(class='modal-header')
+        button(type='button', class='close', data-dismiss='modal', aria-label='Close')
+          span(aria-hidden='true') &times;
+        p(id='warning-msg', class='text-warninng')
+        h4(id='login-label', class='modal-title') Sign In
+      div(class='modal-body')
+        input(id='login-username', type='text', class='form-control', placeholder='Username...')
+        input(id='login-password', type='text', class='form-control', placeholder='Password...')
+      div(class='modal-footer')
+        button(type='button', class='btn btn-default', data-dismiss='modal') Cancle
+        button(id='login-submit', class='btn btn-primary') OK

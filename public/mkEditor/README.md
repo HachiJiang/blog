@@ -11,3 +11,5 @@ highlight.js
 jquery
 requirejs
 bootstrap
+
+font-awesome.min.css

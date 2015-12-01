@@ -35,7 +35,7 @@ define(['mkEditor/lib/jquery.min.js', 'mkEditor/lib/bootstrap.min.js', 'mkEditor
         var jade_mixins = {};
         var jade_interp;
 
-        buf.push("<div id=\"article-editor\"><h4>文章编辑</h4><div><form class=\"form-group\"><input placeholder=\"标题\" class=\"form-control article-title\"/><div class=\"article-tag-wrap\"><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\"></div></div><div class=\"pull-right article-preview\"><btn data-toggle=\"modal\"><a href=\"#\">预览</a></btn></div><div class=\"article-editor-toolbar\"><button type=\"button\" class=\"btn btn-default btn-xs btn-article-pic\"><span aria-hidden=\"true\" class=\"glyphicon glyphicon-picture\"></span></button></div><textarea rows=\"20\" placeholder=\"正文，请使用markdown语法编辑\" class=\"form-control article-content\"></textarea></form></div><div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">保存文章</button></div></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div>");;
+        buf.push("<div class=\"article-editor\"><h4>文章编辑</h4><div><form class=\"form-group\"><input placeholder=\"标题\" class=\"form-control article-title\"/><div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><span class=\"pull-left\">类别: </span><div class=\"pull-left dropdown\"><button id=\"mkEditor-dropdownMenu\" type=\"button\" data-toggle=\"dropzone\" aria-haspopup=\"true\" aria-expanded=\"true\" class=\"btn btn-default dropdown-toggle\">默认<span class=\"caret\"></span></button><ul aria-labelledby=\"mkEditor-dropdownMenu\" class=\"dropdown-menu\"><li><a href=\"#\">Action</a></li></ul></div></div><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\"></div></div><div class=\"pull-right article-preview\"><btn data-toggle=\"modal\"><a href=\"#\">预览</a></btn></div><div class=\"article-editor-toolbar\"></div><textarea rows=\"20\" placeholder=\"正文，请使用markdown语法编辑\" class=\"form-control article-content\"></textarea></form></div><div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">保存文章</button></div></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div>");;
         return buf.join("");
     }
 
@@ -72,7 +72,16 @@ define(['mkEditor/lib/jquery.min.js', 'mkEditor/lib/bootstrap.min.js', 'mkEditor
     function _parseInputToHTML(article) {
         article.content = mkParser(article.content);
         article.date_created_HTML = _parseDate(article.date_created);
-        return article.content;
+        article.titleHTML = "<div><h1 class='article-title'><a href='#'>" + article.title + "</a></h1><div class='article-meta'><span class='author'>作者：<a href='#'>" + article.author + "</a></span> &bull;<time class='article-date' datetime='" + article.date_created + "' title='" + article.created_date + "'>" + article.date_created_HTML + "</time></div></div>";
+
+        article.tagHTML = [];
+        $.each(article.tags, function(i, tag) {
+            article.tagHTML[i] = '<a href="#">' + tag + '</a>';
+        });
+        article.tagHTML.join(",");
+        article.contentHTML = "<section class='article-content'>" + article.content + "</section>";
+
+        return '<article class="article">' + article.titleHTML + article.contentHTML + '<footer class="article-footer"><div class="pull-left tag-list">' + article.tagHTML + '</div></footer>' + '</article>';
     }
 
     // 验证用户输入是否有效
@@ -115,7 +124,7 @@ define(['mkEditor/lib/jquery.min.js', 'mkEditor/lib/bootstrap.min.js', 'mkEditor
 
         // 2. 绑定事件
         // 预览文章，弹出模态框
-        parent.on('click', '.article-preview', function() {
+        $('.article-editor').on('click', '.article-preview', function() {
             var valid = _collectInput(),
                 preview_html,
                 dialog_preview;
@@ -131,6 +140,44 @@ define(['mkEditor/lib/jquery.min.js', 'mkEditor/lib/bootstrap.min.js', 'mkEditor
             dialog_preview.modal();
         });
 
+        // 点击 添加标签
+        $('.article-editor').on('click', '.btn-tag-add a', function() {
+            if ($('.article-tag-list input').length > 0) return;
+            var tag_input = $('<input type="text" class="article-tag pull-left"></input>');
+            $('.article-tag-list').prepend(tag_input);
+            $(tag_input).focus();
+        });
+
+        // 输入标签转为a
+        $('.article-editor').on('keydown', '.article-tag-list input', function(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                var tag_node = $('<a class="article-tag pull-left"></a>');
+                $(tag_node).text(this.value);
+                $('.article-editor .article-tag-list input').remove();
+                $('.article-tag-list').prepend(tag_node);
+            }
+        });
+
+        // 标签mouse over时浮动显示删除icon
+        $('.article-editor').on('mouseenter', '.article-tag', function() {
+            $(this).append('<i class="fa fa-times"></i>');
+        });
+        $('.article-editor').on('mouseleave', '.article-tag', function() {
+            $(this).find('.fa-times').remove();
+        });
+
+        // 编辑模式下，点击标签的删除icon
+        $('.article-editor').on('click', '.fa-times', function() {
+            $(this).parents('.article-tag').remove();
+        });
+
+        // 编辑模式下，点击图片icon 插入图片
+        $('.article-editor').on('click', '.btn-article-pic', function() {
+            $('.upload-file-dialog').modal({
+                keyboard: false
+            });
+        });
     };
 
     exports.remove = function remove() {
@@ -138,4 +185,6 @@ define(['mkEditor/lib/jquery.min.js', 'mkEditor/lib/bootstrap.min.js', 'mkEditor
 
         // 2. 解除事件绑定
     };
+
+    exports.collectInput = _collectInput;
 });

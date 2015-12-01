@@ -5,7 +5,15 @@ div(class='article-editor')
   div
     form(class='form-group')
       input(class='form-control article-title', placeholder='标题')
-      div(class='article-tag-wrap')
+      div(class='article-meta-wrap')
+        div(class='pull-left article-cat-wrap')
+          span(class='pull-left') 类别: 
+          div(class='pull-left dropdown')
+            button(id='mkEditor-dropdownMenu', class='btn btn-default dropdown-toggle', type='button', data-toggle='dropzone', aria-haspopup='true', aria-expanded='true') 默认
+              span(class='caret')
+            ul(class='dropdown-menu', aria-labelledby='mkEditor-dropdownMenu')
+              li
+                a(href='#') Action
         btn(class='pull-left btn-tag-add')
           a(href='#') 添加标签
         div(class='pull-left article-tag-list')
@@ -13,8 +21,6 @@ div(class='article-editor')
         btn(data-toggle='modal')
           a(href='#') 预览
       div(class='article-editor-toolbar')
-        button(type='button', class='btn btn-default btn-xs btn-article-pic')
-          span(class='glyphicon glyphicon-picture' aria-hidden='true')
       textarea(rows='20', class='form-control article-content', placeholder='正文，请使用markdown语法编辑')
   div(class='pull-right')
     button(type='button', class='btn btn-default btn-editor-exit') 退出编辑

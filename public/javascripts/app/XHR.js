@@ -1,8 +1,12 @@
 /* Process XHR events */
+/* 对应后端的路由 */
 
 define(['jquery', 'exports'], function($, exports) {
     var _version = '/v1';
 
+    // GET: 获取主页所有数据
+
+    // GET: 获取某页文章
     exports.getArticlesByPageIdx = function(page_idx, cb) {
         $.ajax({
             type: "GET",
@@ -22,5 +26,8 @@ define(['jquery', 'exports'], function($, exports) {
                 alert("连接失败");
             }
         });
+
+        // POST: 保存单篇文章，并显示正文
+        
     };
 });

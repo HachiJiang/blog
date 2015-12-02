@@ -1,5 +1,7 @@
-//- template of markdown eidtor
-
+//- css文件依赖
+link(rel='stylesheet', href='/mkEditor/styles/highlights/monokai_sublime.css')
+link(rel='stylesheet', href='/mkEditor/styles/font-awesome.min.css')
+//- 编辑器模板
 div(class='article-editor')
   h4 文章编辑
   div
@@ -20,14 +22,37 @@ div(class='article-editor')
       div(class='pull-right article-preview')
         btn(data-toggle='modal')
           a(href='#') 预览
-      div(class='article-editor-toolbar')
-      textarea(rows='20', class='form-control article-content', placeholder='正文，请使用markdown语法编辑')
+    div(class='article-editor-toolbar', style='clear:both')
+      div(class='btn btn-default btn-xs btn-article-pic')
+        span(class='fa fa-file-image-o', aria-hidden='true')
+    textarea(rows='20', class='form-control article-content', placeholder='正文，请使用markdown语法编辑')
   div(class='pull-right')
     button(type='button', class='btn btn-default btn-editor-exit') 退出编辑
     button(type='button', class='btn btn-primary btn-editor-save') 保存文章
 
+//- 文章预览窗口
 div(class='modal dialog-article-preview', tagindex='-1', role='dialog', aria-hidden='true')
   div(class='modal-dialog modal-lg')
     div(class='modal-content')
       div(class='modal-body')
         p 预览内容
+
+//- 上传文件窗口
+div(class='modal dialog-upload-file', tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+  div(class='modal-dialog')
+    div(class='modal-content')
+      div(class='modal-header')
+        button(type='button', class='close', data-dismiss='modal', aria-label='Close')
+          span(aria-hidden='true') &times;
+        h4(class='modal-title') 插入图片
+      div(class='modal-body')
+        input(class='input-upload-img', type='file', accept='image/png,image/gif,image/jpg,image/jpeg', multiple='multiple', style='display:none')
+        div(class='input-group')
+          span(class='input-group-addon')
+            span(class='fa fa-file-image-o')
+          input(type='text', class='form-control input-img-links')
+          span(class='input-group-btn')
+            button(class='btn', type='button', onclick='$("input[class=input-upload-img]").click();') ...
+      div(class='modal-footer')
+        button(type='button', class='btn btn-default', data-dismiss='modal') 取消
+        button(type='button', class='btn btn-primary btn-confirm btn-upload-img') 确定

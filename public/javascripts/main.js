@@ -34,31 +34,9 @@ require(['jquery', 'bootstrap', 'mkEditor'], function($, bootstrap, mkEditor) {
             mkEditor.render('primary');
         });
 
+        // 保存文章，页面跳转显示正文全文
+
         // 退出编辑
 
-        // 点击添加标签
-
-        // 输入标签转为a
-
-
-
-        /*require(['XHR'], function(XHR) {
-            // render articles
-            XHR.getArticlesByPageIdx(0, function(article_list) {
-                require(['views/article.js'], function(article) {
-                    var div_articles = '';
-                    for (var i = 0, il = article_list.length; i < il; i++) {
-                        div_articles += article.template({
-                            'article': article_list[i]
-                        });
-                    }
-                    $('#content-wrap').html(div_articles);
-                });
-
-            });
-
-            // render widgets in side bar
-
-        });*/
     });
 });

@@ -1,6 +1,13 @@
 /* Markdown Editor: Main module */
 
-define(['mkEditor/lib/jquery.min.js', 'mkEditor/lib/bootstrap.min.js', 'mkEditor/lib/runtime.js', 'mkEditor/mkParser.js', 'exports'], function(jquery, bootstrap, jade, mkParser, exports) {
+define([
+    'mkEditor/lib/jquery.min.js',
+    'mkEditor/lib/bootstrap.min.js',
+    'mkEditor/lib/runtime.js',
+    'mkEditor/mkParser.js',
+    'exports',
+    'mkEditor/lib/jquery-extend.js'
+], function(jquery, bootstrap, jade, mkParser, exports) {
     // 解析时间
     var parent_div_class = 'mkEditor';
     var weekday = {
@@ -35,7 +42,7 @@ define(['mkEditor/lib/jquery.min.js', 'mkEditor/lib/bootstrap.min.js', 'mkEditor
         var jade_mixins = {};
         var jade_interp;
 
-        buf.push("<div class=\"article-editor\"><h4>文章编辑</h4><div><form class=\"form-group\"><input placeholder=\"标题\" class=\"form-control article-title\"/><div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><span class=\"pull-left\">类别: </span><div class=\"pull-left dropdown\"><button id=\"mkEditor-dropdownMenu\" type=\"button\" data-toggle=\"dropzone\" aria-haspopup=\"true\" aria-expanded=\"true\" class=\"btn btn-default dropdown-toggle\">默认<span class=\"caret\"></span></button><ul aria-labelledby=\"mkEditor-dropdownMenu\" class=\"dropdown-menu\"><li><a href=\"#\">Action</a></li></ul></div></div><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\"></div></div><div class=\"pull-right article-preview\"><btn data-toggle=\"modal\"><a href=\"#\">预览</a></btn></div><div class=\"article-editor-toolbar\"></div><textarea rows=\"20\" placeholder=\"正文，请使用markdown语法编辑\" class=\"form-control article-content\"></textarea></form></div><div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">保存文章</button></div></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div>");;
+        buf.push("<link rel=\"stylesheet\" href=\"/mkEditor/styles/highlights/monokai_sublime.css\"/><link rel=\"stylesheet\" href=\"/mkEditor/styles/font-awesome.min.css\"/><div class=\"article-editor\"><h4>文章编辑</h4><div><form class=\"form-group\"><input placeholder=\"标题\" class=\"form-control article-title\"/><div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><span class=\"pull-left\">类别: </span><div class=\"pull-left dropdown\"><button id=\"mkEditor-dropdownMenu\" type=\"button\" data-toggle=\"dropzone\" aria-haspopup=\"true\" aria-expanded=\"true\" class=\"btn btn-default dropdown-toggle\">默认<span class=\"caret\"></span></button><ul aria-labelledby=\"mkEditor-dropdownMenu\" class=\"dropdown-menu\"><li><a href=\"#\">Action</a></li></ul></div></div><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\"></div></div><div class=\"pull-right article-preview\"><btn data-toggle=\"modal\"><a href=\"#\">预览</a></btn></div></form><div style=\"clear:both\" class=\"article-editor-toolbar\"><div class=\"btn btn-default btn-xs btn-article-pic\"><span aria-hidden=\"true\" class=\"fa fa-file-image-o\"></span></div></div><textarea rows=\"20\" placeholder=\"正文，请使用markdown语法编辑\" class=\"form-control article-content\"></textarea></div><div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">保存文章</button></div></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div><div tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" class=\"modal dialog-upload-file\"><div class=\"modal-dialog\"><div class=\"modal-content\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button><h4 class=\"modal-title\">插入图片</h4></div><div class=\"modal-body\"><input type=\"file\" accept=\"image/png,image/gif,image/jpg,image/jpeg\" multiple=\"multiple\" style=\"display:none\" class=\"input-upload-img\"/><div class=\"input-group\"><span class=\"input-group-addon\"><span class=\"fa fa-file-image-o\"></span></span><input type=\"text\" class=\"form-control input-img-links\"/><span class=\"input-group-btn\"><button type=\"button\" onclick=\"$(&quot;input[class=input-upload-img]&quot;).click();\" class=\"btn\">...</button></span></div></div><div class=\"modal-footer\"><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default\">取消</button><button type=\"button\" class=\"btn btn-primary btn-confirm btn-upload-img\">确定</button></div></div></div></div>");;
         return buf.join("");
     }
 
@@ -104,25 +111,13 @@ define(['mkEditor/lib/jquery.min.js', 'mkEditor/lib/bootstrap.min.js', 'mkEditor
         return res;
     }
 
-    /**
-     * [render description]
-     * @param  {String} id            id of parent div
-     * @return null
-     */
-    exports.render = function render(id) {
-        var parent = $('#' + id),
-            editor_html;
+    // 在光标处插入字符串
+    function _insertAtPos(str, extrastr, pos) {
+        return str.substr(0, pos) + extrastr + str.substr(pos, str.length - pos);
+    }
 
-        if (!id || !parent) {
-            console.log('invalid param for render method');
-            return;
-        }
-
-        // 1. 加载编辑器节点
-        editor_html = _template();
-        parent.html(editor_html);
-
-        // 2. 绑定事件
+    // 绑定事件
+    function _attachEventListeners() {
         // 预览文章，弹出模态框
         $('.article-editor').on('click', '.article-preview', function() {
             var valid = _collectInput(),
@@ -167,17 +162,78 @@ define(['mkEditor/lib/jquery.min.js', 'mkEditor/lib/bootstrap.min.js', 'mkEditor
             $(this).find('.fa-times').remove();
         });
 
-        // 编辑模式下，点击标签的删除icon
+        // 点击标签的删除icon
         $('.article-editor').on('click', '.fa-times', function() {
             $(this).parents('.article-tag').remove();
         });
 
-        // 编辑模式下，点击图片icon 插入图片
+        // 点击图片icon 插入图片
         $('.article-editor').on('click', '.btn-article-pic', function() {
-            $('.upload-file-dialog').modal({
+            $('.dialog-upload-file').modal({
                 keyboard: false
             });
         });
+
+        // 显示前重置上传表单
+        $('.dialog-upload-file').on('hidden.bs.modal', function() {
+            $(this).find('.input-upload-img').val("");
+            $(this).find('.input-img-links').val("");
+        });
+
+        // 上传文件时，显示文件列表
+        $('.dialog-upload-file').on('change', '.input-upload-img', function() {
+            var files = $(this).prop('files');
+            var len = files.length;
+            var filenames = files[0].name;
+            for (var i = 1; i < len; i++) {
+                filenames += ";" + files[i].name;
+            }
+            $('.input-img-links').val(filenames);
+        });
+
+        // 生成文件链接内容
+        $('.dialog-upload-file').on('click', '.btn-upload-img', function() {
+            var files = $('.input-upload-img').prop('files'),
+                len = files.length,
+                imgHTML = '',
+                contentnode, content, i;
+
+            if (len === 0) {
+                $('.dialog-upload-file .modal-body').append('<p>未上传任何文件</p>');
+                return;
+            }
+
+            for (i = 0; i < len; i++) {
+                imgHTML += '![Alt text](./images/' + new Date().getTime() + '_' + files[i].name + ')\n';
+            }
+
+            contentnode = $('.article-content');
+            content = _insertAtPos(contentnode.val(), imgHTML, contentnode.getCurPos());
+            contentnode.val(content);
+            $('.dialog-upload-file').modal('hide');
+        });
+    }
+
+    /**
+     * [render description]
+     * @param  {String} id            id of parent div
+     * @return null
+     */
+    exports.render = function render(id) {
+        var parent = $('#' + id),
+            editor_html;
+
+        if (!id || !parent) {
+            console.log('invalid param for render method');
+            return;
+        }
+
+        // 1. 加载编辑器节点
+        editor_html = _template();
+        parent.html(editor_html);
+
+        // 2. 绑定事件
+        _attachEventListeners();
     };
 
     exports.remove = function remove() {

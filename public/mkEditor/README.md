@@ -7,9 +7,7 @@ do not rename the folder
 deps:
 marked.js
 highlight.js
-
 jquery
 requirejs
 bootstrap
-
 font-awesome.min.css

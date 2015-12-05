@@ -65,9 +65,7 @@ router.get(version + '/articles', function(req, res, next) {
 });
 router.get(version + '/articles/page/:page_idx', function(req, res, next) {
     var page_idx = req.params.page_idx;
-
     console.log(req.params);
-
     model.getArticles(page_idx, function(err, json_str) {
         res.send(json_str);
     });
@@ -80,7 +78,6 @@ router.get(version + '/articles/category/:category_id/page/:page_idx', function(
         category_id = params.category_id;
 
     console.log(req.params);
-
     model.getArticlesByCategory(category_id, page_idx, function(err, json_str) {
         res.send(json_str);
     });
@@ -93,7 +90,6 @@ router.get(version + '/articles/status/:status_id/page/:page_idx', function(req,
         status_id = params.status_id;
 
     console.log(req.params);
-
     model.getArticlesByStatus(status_id, page_idx, function(err, json_str) {
         res.send(json_str);
     });
@@ -102,9 +98,7 @@ router.get(version + '/articles/status/:status_id/page/:page_idx', function(req,
 /* GET single article by id */
 router.get(version + '/article/:article_id', function(req, res, next) {
     var article_id = req.params.article_id;
-
     console.log(req.params);
-
     model.getArticleById(article_id, function(err, json_str) {
         res.send(json_str);
     });
@@ -149,7 +143,10 @@ router.get(version + '/categories', function(req, res, next) {
 
 /* Create a new article */
 router.post(version + '/article/create', function(req, res, next) {
-
+    var article = req.body;
+    model.saveArticle(article, function(err, json_str) {
+        res.send(json_str);
+    });
 });
 
 /* Update an existing article */

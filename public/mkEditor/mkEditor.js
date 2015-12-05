@@ -8,6 +8,7 @@ define([
     'exports',
     'mkEditor/lib/jquery-extend.js'
 ], function(jquery, bootstrap, jade, mkParser, exports) {
+    $.noConflict();
     // 解析时间
     var parent_div_class = 'mkEditor';
     var weekday = {
@@ -42,27 +43,25 @@ define([
         var jade_mixins = {};
         var jade_interp;
 
-        buf.push("<link rel=\"stylesheet\" href=\"/mkEditor/styles/highlights/monokai_sublime.css\"/><link rel=\"stylesheet\" href=\"/mkEditor/styles/font-awesome.min.css\"/><div class=\"article-editor\"><h4>文章编辑</h4><div><form class=\"form-group\"><input placeholder=\"标题\" class=\"form-control article-title\"/><div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><span class=\"pull-left\">类别: </span><div class=\"pull-left dropdown\"><button id=\"mkEditor-dropdownMenu\" type=\"button\" data-toggle=\"dropzone\" aria-haspopup=\"true\" aria-expanded=\"true\" class=\"btn btn-default dropdown-toggle\">默认<span class=\"caret\"></span></button><ul aria-labelledby=\"mkEditor-dropdownMenu\" class=\"dropdown-menu\"><li><a href=\"#\">Action</a></li></ul></div></div><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\"></div></div><div class=\"pull-right article-preview\"><btn data-toggle=\"modal\"><a href=\"#\">预览</a></btn></div></form><div style=\"clear:both\" class=\"article-editor-toolbar\"><div class=\"btn btn-default btn-xs btn-article-pic\"><span aria-hidden=\"true\" class=\"fa fa-file-image-o\"></span></div></div><textarea rows=\"20\" placeholder=\"正文，请使用markdown语法编辑\" class=\"form-control article-content\"></textarea></div><div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">保存文章</button></div></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div><div tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" class=\"modal dialog-upload-file\"><div class=\"modal-dialog\"><div class=\"modal-content\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button><h4 class=\"modal-title\">插入图片</h4></div><div class=\"modal-body\"><input type=\"file\" accept=\"image/png,image/gif,image/jpg,image/jpeg\" multiple=\"multiple\" style=\"display:none\" class=\"input-upload-img\"/><div class=\"input-group\"><span class=\"input-group-addon\"><span class=\"fa fa-file-image-o\"></span></span><input type=\"text\" class=\"form-control input-img-links\"/><span class=\"input-group-btn\"><button type=\"button\" onclick=\"$(&quot;input[class=input-upload-img]&quot;).click();\" class=\"btn\">...</button></span></div></div><div class=\"modal-footer\"><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default\">取消</button><button type=\"button\" class=\"btn btn-primary btn-confirm btn-upload-img\">确定</button></div></div></div></div>");;
+        buf.push("<link rel=\"stylesheet\" href=\"/mkEditor/styles/highlights/monokai_sublime.css\"/><link rel=\"stylesheet\" href=\"/mkEditor/styles/font-awesome.min.css\"/><div class=\"article-editor\"><h4>文章编辑</h4><div><form class=\"form-group\"><input placeholder=\"标题\" class=\"form-control article-title\"/><div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><div class=\"pull-left\"><span>类别: </span></div><div class=\"pull-left dropdown\"><button id=\"dropdown-cat-menu\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\" class=\"btn btn-default dropdown-toggle\">默认<span class=\"caret\"></span></button><ul aria-labelledby=\"dropdown-cat-menu\" class=\"dropdown-menu\"><li><a href=\"#\">Action</a></li><li><a href=\"#\">Another action</a></li></ul></div></div><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\"></div></div><div class=\"pull-right article-preview\"><btn data-toggle=\"modal\"><a href=\"#\">预览</a></btn></div></form><div style=\"clear:both\" class=\"article-editor-toolbar\"><div class=\"btn btn-default btn-xs btn-article-pic\"><span aria-hidden=\"true\" class=\"fa fa-file-image-o\"></span></div></div><textarea rows=\"20\" placeholder=\"正文，请使用markdown语法编辑\" class=\"form-control article-content\"></textarea></div><div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">发布文章</button></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div><div tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" class=\"modal dialog-upload-file\"><div class=\"modal-dialog\"><div class=\"modal-content\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button><h4 class=\"modal-title\">插入图片</h4></div><div class=\"modal-body\"><input type=\"file\" accept=\"image/png,image/gif,image/jpg,image/jpeg\" multiple=\"multiple\" style=\"display:none\" class=\"input-upload-img\"/><div class=\"input-group\"><span class=\"input-group-addon\"><span class=\"fa fa-file-image-o\"></span></span><input type=\"text\" class=\"form-control input-img-links\"/><span class=\"input-group-btn\"><button type=\"button\" onclick=\"$(&quot;input[class=input-upload-img]&quot;).click();\" class=\"btn\">...</button></span></div></div><div class=\"modal-footer\"><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default\">取消</button><button type=\"button\" class=\"btn btn-primary btn-confirm btn-upload-img\">确定</button></div></div></div></div></div>");;
         return buf.join("");
     }
 
     // 搜集文章编辑页输入的信息
     function _collectInput() {
         var article = {
-                author: 'swordarchor',
                 title: $('.article-title').val(),
+                category: $('#dropdown-cat-menu').text(),
                 tags: [],
-                date_created: new Date(),
+                date_collected: new Date(),
                 content: $('.article-content').val()
             },
-            article_id = $('.article-editor .form-group').attr("id"),
             validate_info, tag_nodes, i, il;
 
-        article.id = (article_id === undefined) ? -1 : article_id;
         validate_info = _validateArticleInfo(article);
         if (validate_info.success === false) return validate_info;
 
-        tag_nodes = $('.article-tags').children();
+        tag_nodes = $('.article-tag-list').children();
         if (tag_nodes.length !== 0) {
             for (i = 0, il = tag_nodes.length; i < il; i++) {
                 article.tags[i] = $(tag_nodes[i]).text();
@@ -78,8 +77,8 @@ define([
     // 解析用户输入的文章内容为HTML
     function _parseInputToHTML(article) {
         article.content = mkParser(article.content);
-        article.date_created_HTML = _parseDate(article.date_created);
-        article.titleHTML = "<div><h1 class='article-title'><a href='#'>" + article.title + "</a></h1><div class='article-meta'><span class='author'>作者：<a href='#'>" + article.author + "</a></span> &bull;<time class='article-date' datetime='" + article.date_created + "' title='" + article.created_date + "'>" + article.date_created_HTML + "</time></div></div>";
+        article.date_collected_HTML = _parseDate(article.date_collected);
+        article.titleHTML = "<div><h1 class='article-title'><a href='#'>" + article.title + "</a></h1><div class='article-meta'><span class='author'>类别：<a href='#'>" + article.category + "</a></span> &bull;<time class='article-date' datetime='" + article.date_collected + "' title='" + article.date_collected + "'>" + article.date_collected_HTML + "</time></div></div>";
 
         article.tagHTML = [];
         $.each(article.tags, function(i, tag) {
@@ -124,19 +123,16 @@ define([
                 preview_html,
                 dialog_preview;
 
-            if (valid.success === false) {
-                preview_html = valid.body;
-            } else {
-                preview_html = _parseInputToHTML(valid.body);
-            }
-            preview_html = !preview_html ? '' : preview_html;
+            preview_html = (valid.success === true) ? _parseInputToHTML(valid.body) : valid.body;
+            preview_html = (!preview_html) ? '' : preview_html;
             dialog_preview = $('.dialog-article-preview');
             dialog_preview.find('.modal-body').html(preview_html);
             dialog_preview.modal();
         });
 
         // 点击 添加标签
-        $('.article-editor').on('click', '.btn-tag-add a', function() {
+        $('.article-editor').on('click', '.btn-tag-add a', function(e) {
+            e.preventDefault();
             if ($('.article-tag-list input').length > 0) return;
             var tag_input = $('<input type="text" class="article-tag pull-left"></input>');
             $('.article-tag-list').prepend(tag_input);
@@ -219,7 +215,7 @@ define([
      * @param  {String} id            id of parent div
      * @return null
      */
-    exports.render = function render(id) {
+    function render(id) {
         var parent = $('#' + id),
             editor_html;
 
@@ -234,13 +230,30 @@ define([
 
         // 2. 绑定事件
         _attachEventListeners();
+    }
+
+    function remove(id) {
+        // 1. 解除事件绑定
+
+        // 2. 从页面移除editor节点
+        $('#' + id + ' .article-editor').remove();
+    }
+
+    /**
+     * Collect input info
+     * @return {Object}
+     * {
+     *     title: $('.article-title').val(),
+     *     category: ,
+     *     tags: [],
+     *     date_collected: new Date(),
+     *     content: $('.article-content').val()
+     * }
+     */
+    exports.collectInput = function() {
+        var res = _collectInput();
+        return (res.success === true) ? res.body : {};
     };
-
-    exports.remove = function remove() {
-        // 1. 从页面移除editor节点
-
-        // 2. 解除事件绑定
-    };
-
-    exports.collectInput = _collectInput;
+    exports.render = render;
+    exports.remove = remove;
 });

@@ -9,13 +9,16 @@ div(class='article-editor')
       input(class='form-control article-title', placeholder='标题')
       div(class='article-meta-wrap')
         div(class='pull-left article-cat-wrap')
-          span(class='pull-left') 类别: 
+          div(class='pull-left')
+            span 类别: 
           div(class='pull-left dropdown')
-            button(id='mkEditor-dropdownMenu', class='btn btn-default dropdown-toggle', type='button', data-toggle='dropzone', aria-haspopup='true', aria-expanded='true') 默认
+            button(id='dropdown-cat-menu', class='btn btn-default dropdown-toggle', type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='true') 默认
               span(class='caret')
-            ul(class='dropdown-menu', aria-labelledby='mkEditor-dropdownMenu')
+            ul(class='dropdown-menu', aria-labelledby='dropdown-cat-menu')
               li
                 a(href='#') Action
+              li
+                a(href='#') Another action
         btn(class='pull-left btn-tag-add')
           a(href='#') 添加标签
         div(class='pull-left article-tag-list')
@@ -28,31 +31,31 @@ div(class='article-editor')
     textarea(rows='20', class='form-control article-content', placeholder='正文，请使用markdown语法编辑')
   div(class='pull-right')
     button(type='button', class='btn btn-default btn-editor-exit') 退出编辑
-    button(type='button', class='btn btn-primary btn-editor-save') 保存文章
+    button(type='button', class='btn btn-primary btn-editor-save') 发布文章
 
-//- 文章预览窗口
-div(class='modal dialog-article-preview', tagindex='-1', role='dialog', aria-hidden='true')
-  div(class='modal-dialog modal-lg')
-    div(class='modal-content')
-      div(class='modal-body')
-        p 预览内容
+  //- 文章预览窗口
+  div(class='modal dialog-article-preview', tagindex='-1', role='dialog', aria-hidden='true')
+    div(class='modal-dialog modal-lg')
+      div(class='modal-content')
+        div(class='modal-body')
+          p 预览内容
 
-//- 上传文件窗口
-div(class='modal dialog-upload-file', tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-  div(class='modal-dialog')
-    div(class='modal-content')
-      div(class='modal-header')
-        button(type='button', class='close', data-dismiss='modal', aria-label='Close')
-          span(aria-hidden='true') &times;
-        h4(class='modal-title') 插入图片
-      div(class='modal-body')
-        input(class='input-upload-img', type='file', accept='image/png,image/gif,image/jpg,image/jpeg', multiple='multiple', style='display:none')
-        div(class='input-group')
-          span(class='input-group-addon')
-            span(class='fa fa-file-image-o')
-          input(type='text', class='form-control input-img-links')
-          span(class='input-group-btn')
-            button(class='btn', type='button', onclick='$("input[class=input-upload-img]").click();') ...
-      div(class='modal-footer')
-        button(type='button', class='btn btn-default', data-dismiss='modal') 取消
-        button(type='button', class='btn btn-primary btn-confirm btn-upload-img') 确定
+  //- 上传文件窗口
+  div(class='modal dialog-upload-file', tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+    div(class='modal-dialog')
+      div(class='modal-content')
+        div(class='modal-header')
+          button(type='button', class='close', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') &times;
+          h4(class='modal-title') 插入图片
+        div(class='modal-body')
+          input(class='input-upload-img', type='file', accept='image/png,image/gif,image/jpg,image/jpeg', multiple='multiple', style='display:none')
+          div(class='input-group')
+            span(class='input-group-addon')
+              span(class='fa fa-file-image-o')
+            input(type='text', class='form-control input-img-links')
+            span(class='input-group-btn')
+              button(class='btn', type='button', onclick='$("input[class=input-upload-img]").click();') ...
+        div(class='modal-footer')
+          button(type='button', class='btn btn-default', data-dismiss='modal') 取消
+          button(type='button', class='btn btn-primary btn-confirm btn-upload-img') 确定

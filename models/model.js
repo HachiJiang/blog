@@ -178,6 +178,181 @@ exports.getCategories = function(resCalbk) {
     _achieveData(sql, data, resCalbk);
 };
 
+/**
+ * 保存单篇文章
+ * @param  {Object} article  [description]
+ * {
+ *     article_id:
+ *     article_title:
+ *     category_name:
+ *     article_date_created:
+ *     article_date_modified:
+ *     user_name:
+ *     status_id:
+ *     article_content:
+ *     article_statistics:
+ *     tags:
+ *     comments:
+ * }
+ * @param  {Funtion} resCalbk [description]
+ * @return null
+ */
+exports.saveArticle = function(article, resCalbk) {
+    pool.getConnection(function(err, connection) {
+        console.log(article);
+        // get user_id by user_name
+        var getUserIdByName = function(sql, cb1) {
+            connection.query(sql, function(err, results) {
+                _errorHandler(err, results, cb1);
+                cb1(null, results[0].user_id);
+            });
+        };
+
+        // insert category_id by category_name
+        var insertCatIdByName = function(user_id, cb1) {
+            var sql_0 = 'INSERT IGNORE INTO tbl_categories (category_name) VALUES ("' + article.category_name + '")';
+            connection.query(sql_0, function(err, results) {
+                _errorHandler(err, results, cb1);
+                cb1(null, user_id);
+            });
+        };
+
+        // get category_id by category_name
+        var getCatIdByName = function(user_id, cb1) {
+            var sql_0 = 'SELECT category_id FROM tbl_categories WHERE category_name="' + article.category_name + '"';
+            connection.query(sql_0, function(err, results) {
+                _errorHandler(err, results, cb1);
+                cb1(null, {
+                    'user_id': user_id,
+                    'category_id': results[0].category_id
+                });
+            });
+        };
+
+        // 保存文章
+        var updateTblArticle = function(info, cb1) {
+            var user_id = info.user_id,
+                category_id = info.category_id,
+                article_id = article.article_id,
+                sql_0 = '';
+
+            if (article_id === '-1') {
+                // 新建
+                sql_0 = 'INSERT tbl_articles (article_title, category_id, article_date_created, article_date_modified, user_id, status_id, article_content, article_statistics) VALUES ' +
+                    '("' + article.article_title + '", "' + category_id + '", "' + article.article_date_created + '", "' + article.article_date_modified + '", "' +
+                    user_id + '", "' + article.status_id + '", "' + article.article_content + '", "' + article.article_statistics + '")';
+            } else {
+                // 更新
+                sql_0 = 'UPDATE tbl_articles SET article_title="' + article.article_title + '", category_id="' + category_id + '", article_date_created="' + article.article_date_created +
+                    '", article_date_modified="' + article.article_date_modified + '", user_id="' + user_id + '", status_id="' + article.status_id +
+                    '", article_content="' + article.article_content + '", article_statistics="' + article.article_statistics + '" WHERE article_id="' + article_id + '"';
+            }
+            connection.query(sql_0, function(err, results) {
+                _errorHandler(err, results, cb1);
+                cb1(null, (article_id !== -1) ? article.article_id : results.insertId);
+            });
+        };
+
+        // 更新tbl_tags
+        var updateTblTags = function(article_id, cb1) {
+            var sql_0 = 'INSERT IGNORE INTO tbl_tags (tag_name) VALUES',
+                tagArr = article.tags.split(','),
+                i, il;
+
+            for (i = 0, il = tagArr.length; i < il; i++) {
+                tagArr[i] = '("' + tagArr[i] + '")';
+            }
+
+            sql_0 += tagArr.join(',');
+            connection.query(sql_0, function(err, results) {
+                _errorHandler(err, results, cb1);
+                cb1(null, article_id);
+            });
+        };
+
+        // 获取tags id
+        var getTagIdsByNames = function(article_id, cb1) {
+            var sql_0 = 'SELECT tag_id FROM tbl_tags WHERE tag_name IN(',
+                tagArr = article.tags.split(','),
+                i, il;
+
+            for (i = 0, il = tagArr.length; i < il; i++) {
+                tagArr[i] = '"' + tagArr[i] + '"';
+            }
+            sql_0 += tagArr.join(',') + ')';
+            connection.query(sql_0, function(err, results) {
+                var tagIdArr = [];
+                _errorHandler(err, results, cb1);
+
+                for (i = 0, il = results.length; i < il; i++) {
+                    tagIdArr[i] = results.tag_id;
+                }
+                cb1(null, {
+                    'article_id': article_id,
+                    'tagIdArr': tagIdArr
+                });
+            });
+        };
+
+        // 更新tbl_article_tag
+        // 1). 删除已有tag对应关系
+        var deleteFromTblArticleTag = function(info, cb1) {
+            var article_id = info.article_id,
+                sql_0 = 'DELETE * FROM tbl_article_tag WHERE article_id="' + article_id + '"';
+
+            connection.query(sql_0, function(err, results) {
+                _errorHandler(err, results, cb1);
+                console.log(results);
+                cb1(null, info);
+            });
+        };
+        // 2). 插入新的tag对应关系
+        var insertTblArticleTag = function(info, cb1) {
+            var article_id = info.article_id,
+                arr = info.tagIdArr,
+                sql_0 = 'INSERT INTO tbl_article_tag (article_id,tag_id) VALUES';
+
+            for (i = 0, il = arr.length; i < il; i++) {
+                arr[i] = '("' + article_id + '","' + arr[i] + '")';
+            }
+            sql_0 += arr.join(',');
+            console.log(sql_0);
+            connection.query(sql_0, function(err, results) {
+                _errorHandler(err, results, cb1);
+                console.log(results);
+                cb1(null, article_id);
+            });
+        };
+
+        // @TO_DO: 更新tbl_article_comment, tbl_article_statistics
+
+        var update = async.compose(
+                deleteFromTblArticleTag,
+                getTagIdsByNames,
+                updateTblTags,
+                updateTblArticle,
+                getCatIdByName,
+                insertCatIdByName,
+                getUserIdByName
+            ),
+            sql = 'SELECT user_id FROM tbl_users WHERE user_name = "' + article.user_name + '"';
+
+        update(sql, function(err, article_id) {
+            console.log('end');
+            _errorHandler(err, data, resCalbk);
+            connection.release();
+            resCalbk(null, _generateSuccessResJson({
+                'article_id': article_id
+            }));
+        });
+    });
+};
+
+// 删除单篇文章
+exports.deleteArticle = function(article, resCalbk) {
+
+};
+
 function _errorHandler(err, results, resCalbk) {
     if (err) {
         console.err('error connecting' + err.stack);
@@ -275,7 +450,7 @@ function _queryLimitedByPage(page_idx) {
 }
 
 function _generateSuccessResJson(data) {
-    var msg = (data && data.list && data.list.length > 0) ? 'Achieve data successfully' : 'No data returned';
+    var msg = (data && data.list && data.list.length > 0) ? 'Achieve data successfully' : 'No data returned/POST successfully';
     return {
         'success': true,
         'message': msg,

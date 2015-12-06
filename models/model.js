@@ -199,7 +199,12 @@ exports.getCategories = function(resCalbk) {
  */
 exports.saveArticle = function(article, resCalbk) {
     pool.getConnection(function(err, connection) {
-        console.log(article);
+        var content = connection.escape(article.article_content),
+            date_created = connection.escape(article.article_date_created),
+            date_modified = connection.escape(article.article_date_modified),
+            tags = article.tags;
+
+        content = content.substr(1, content.length-2);
         // get user_id by user_name
         var getUserIdByName = function(sql, cb1) {
             connection.query(sql, function(err, results) {
@@ -239,94 +244,119 @@ exports.saveArticle = function(article, resCalbk) {
             if (article_id === '-1') {
                 // 新建
                 sql_0 = 'INSERT tbl_articles (article_title, category_id, article_date_created, article_date_modified, user_id, status_id, article_content, article_statistics) VALUES ' +
-                    '("' + article.article_title + '", "' + category_id + '", "' + article.article_date_created + '", "' + article.article_date_modified + '", "' +
-                    user_id + '", "' + article.status_id + '", "' + article.article_content + '", "' + article.article_statistics + '")';
+                    '("' + article.article_title + '", "' + category_id + '", ' + date_created + ', ' + date_modified + ', "' +
+                    user_id + '", "' + article.status_id + '", "' + content + '", "' + article.article_statistics + '")';
             } else {
                 // 更新
-                sql_0 = 'UPDATE tbl_articles SET article_title="' + article.article_title + '", category_id="' + category_id + '", article_date_created="' + article.article_date_created +
-                    '", article_date_modified="' + article.article_date_modified + '", user_id="' + user_id + '", status_id="' + article.status_id +
-                    '", article_content="' + article.article_content + '", article_statistics="' + article.article_statistics + '" WHERE article_id="' + article_id + '"';
-            }
-            connection.query(sql_0, function(err, results) {
-                _errorHandler(err, results, cb1);
-                cb1(null, (article_id !== -1) ? article.article_id : results.insertId);
-            });
-        };
-
-        // 更新tbl_tags
-        var updateTblTags = function(article_id, cb1) {
-            var sql_0 = 'INSERT IGNORE INTO tbl_tags (tag_name) VALUES',
-                tagArr = article.tags.split(','),
-                i, il;
-
-            for (i = 0, il = tagArr.length; i < il; i++) {
-                tagArr[i] = '("' + tagArr[i] + '")';
+                sql_0 = 'UPDATE tbl_articles SET article_title="' + article.article_title + '", category_id="' + category_id +
+                    '", article_date_modified=' + date_modified + ', user_id="' + user_id + '", status_id="' + article.status_id +
+                    '", article_content=' + content + ', article_statistics="' + article.article_statistics + '" WHERE article_id="' + article_id + '"';
             }
 
-            sql_0 += tagArr.join(',');
             connection.query(sql_0, function(err, results) {
+                article_id = (article_id !== '-1') ? article.article_id : results.insertId;
                 _errorHandler(err, results, cb1);
                 cb1(null, article_id);
             });
         };
 
+        // 更新tbl_tags
+        var updateTblTags = function(article_id, cb1) {
+            var sql_0, tagArr, i, il;
+            if (tags !== '') {
+                sql_0 = 'INSERT IGNORE INTO tbl_tags (tag_name) VALUES';
+                tagArr = tags.split(',');
+
+                for (i = 0, il = tagArr.length; i < il; i++) {
+                    tagArr[i] = '("' + tagArr[i] + '")';
+                }
+
+                sql_0 += tagArr.join(',');
+                connection.query(sql_0, function(err, results) {
+                    _errorHandler(err, results, cb1);
+                    cb1(null, article_id);
+                });
+            } else {
+                setTimeout(function() {
+                    console.log('no need to update tbl_tags.');
+                    cb1(null, article_id);
+                }, 1);
+            }
+        };
+
         // 获取tags id
         var getTagIdsByNames = function(article_id, cb1) {
-            var sql_0 = 'SELECT tag_id FROM tbl_tags WHERE tag_name IN(',
-                tagArr = article.tags.split(','),
-                i, il;
+            var sql_0, tagArr, tagIdArr, i, il;
 
-            for (i = 0, il = tagArr.length; i < il; i++) {
-                tagArr[i] = '"' + tagArr[i] + '"';
-            }
-            sql_0 += tagArr.join(',') + ')';
-            connection.query(sql_0, function(err, results) {
-                var tagIdArr = [];
-                _errorHandler(err, results, cb1);
+            if (tags !== '') {
+                sql_0 = 'SELECT tag_id FROM tbl_tags WHERE tag_name IN(';
+                tagArr = tags.split(',');
 
-                for (i = 0, il = results.length; i < il; i++) {
-                    tagIdArr[i] = results.tag_id;
+                for (i = 0, il = tagArr.length; i < il; i++) {
+                    tagArr[i] = '"' + tagArr[i] + '"';
                 }
-                cb1(null, {
-                    'article_id': article_id,
-                    'tagIdArr': tagIdArr
+                sql_0 += tagArr.join(',') + ')';
+                connection.query(sql_0, function(err, results) {
+                    tagIdArr = [];
+                    _errorHandler(err, results, cb1);
+
+                    for (i = 0, il = results.length; i < il; i++) {
+                        tagIdArr[i] = results[i].tag_id;
+                    }
+                    cb1(null, {
+                        'article_id': article_id,
+                        'tagIdArr': tagIdArr
+                    });
                 });
-            });
+            } else {
+                setTimeout(function() {
+                    console.log('no tags for article ' + article_id);
+                    cb1(null, {
+                        'article_id': article_id
+                    });
+                }, 1);
+            }
         };
 
         // 更新tbl_article_tag
         // 1). 删除已有tag对应关系
         var deleteFromTblArticleTag = function(info, cb1) {
             var article_id = info.article_id,
-                sql_0 = 'DELETE * FROM tbl_article_tag WHERE article_id="' + article_id + '"';
+                sql_0 = 'DELETE FROM tbl_article_tag WHERE article_id="' + article_id + '"';
 
             connection.query(sql_0, function(err, results) {
                 _errorHandler(err, results, cb1);
-                console.log(results);
                 cb1(null, info);
             });
         };
         // 2). 插入新的tag对应关系
         var insertTblArticleTag = function(info, cb1) {
             var article_id = info.article_id,
-                arr = info.tagIdArr,
+                arr, sql_0;
+            if (tags !== '') {
+                arr = info.tagIdArr;
                 sql_0 = 'INSERT INTO tbl_article_tag (article_id,tag_id) VALUES';
 
-            for (i = 0, il = arr.length; i < il; i++) {
-                arr[i] = '("' + article_id + '","' + arr[i] + '")';
+                for (i = 0, il = arr.length; i < il; i++) {
+                    arr[i] = '("' + article_id + '","' + arr[i] + '")';
+                }
+                sql_0 += arr.join(',');
+                connection.query(sql_0, function(err, results) {
+                    _errorHandler(err, results, cb1);
+                    cb1(null, article_id);
+                });
+            } else {
+                setTimeout(function() {
+                    console.log('no need to update tbl_article_tag.');
+                    cb1(null, article_id);
+                }, 1);
             }
-            sql_0 += arr.join(',');
-            console.log(sql_0);
-            connection.query(sql_0, function(err, results) {
-                _errorHandler(err, results, cb1);
-                console.log(results);
-                cb1(null, article_id);
-            });
         };
 
         // @TO_DO: 更新tbl_article_comment, tbl_article_statistics
 
         var update = async.compose(
+                insertTblArticleTag,
                 deleteFromTblArticleTag,
                 getTagIdsByNames,
                 updateTblTags,
@@ -338,8 +368,7 @@ exports.saveArticle = function(article, resCalbk) {
             sql = 'SELECT user_id FROM tbl_users WHERE user_name = "' + article.user_name + '"';
 
         update(sql, function(err, article_id) {
-            console.log('end');
-            _errorHandler(err, data, resCalbk);
+            _errorHandler(err, article_id, resCalbk);
             connection.release();
             resCalbk(null, _generateSuccessResJson({
                 'article_id': article_id

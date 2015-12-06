@@ -9,41 +9,121 @@ define([
     'mkEditor/lib/jquery-extend.js'
 ], function(jquery, bootstrap, jade, mkParser, exports) {
     $.noConflict();
-    // 解析时间
-    var parent_div_class = 'mkEditor';
-    var weekday = {
-        "0": "日",
-        "1": "一",
-        "2": "二",
-        "3": "三",
-        "4": "四",
-        "5": "五",
-        "6": "六"
-    };
 
-    function _parseDate(date) {
-        if (!date) {
-            console.log('invalid date to parse');
+    /**
+     * Collect input info
+     * @return {Object}
+     * {
+     *     title: $('.article-title').val(),
+     *     category: ,
+     *     tags: [],
+     *     date_collected: new Date(),
+     *     content: $('.article-content').val()
+     * }
+     */
+    exports.collectInput = function() {
+        var res = _collectInput();
+        return (res.success === true) ? res.body : {};
+    };
+    exports.render = render;
+    exports.remove = remove;
+    exports.parseContent = mkParser;
+
+    /**
+     * Render
+     * @param  {String} id      [description]
+     * @param  {Object} article [description]
+     * {
+     *     title:
+     *     category:
+     *     tags: [Array]
+     *     content:
+     * }
+     * @return {[type]}         [description]
+     */
+    function render(id, article) {
+        var parent = $('#' + id),
+            editor_html;
+
+        if (!id || !parent) {
+            console.log('invalid param for render method');
             return;
         }
-        var year = date.getFullYear(),
-            month = date.getMonth() + 1,
-            daytime = date.getDate(),
-            day = weekday[date.getDay()],
-            hours = date.getHours(),
-            minutes = date.getMinutes();
 
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        return year + "年" + month + "月" + daytime + "日 星期" + day + " " + hours + ":" + minutes;
+        // 1. 加载编辑器节点
+        if (!article) {
+            editor_html = _template();
+        } else {
+            editor_html = _template({
+                'article': article
+            });
+        }
+        parent.html(editor_html);
+
+        // 2. 绑定事件
+        _attachEventListeners();
+    }
+
+    function remove(id) {
+        // 1. 解除事件绑定
+
+        // 2. 从页面移除editor节点
+        $('#' + id + ' .article-editor').remove();
     }
 
     // 获取markdown编辑器模板
     function _template(locals) {
         var buf = [];
         var jade_mixins = {};
-        var jade_interp;
+        var jade_interp;;
+        var locals_for_with = (locals || {});
+        (function(article, undefined) {
+            buf.push("<link rel=\"stylesheet\" href=\"/mkEditor/styles/font-awesome.min.css\"/><div class=\"article-editor\"><h4>文章编辑</h4><div><form class=\"form-group\">");
+            if (article && article.title) {
+                buf.push("<input" + (jade.attrs(jade.merge([{
+                    "placeholder": "标题",
+                    "class": "form-control article-title"
+                }, {
+                    'value': article.title
+                }]), false)) + "/>");
+            } else {
+                buf.push("<input placeholder=\"标题\" class=\"form-control article-title\"/>");
+            }
+            buf.push("<div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><div class=\"pull-left\"><span>类别: </span></div><div class=\"pull-left dropdown\"><button id=\"dropdown-cat-menu\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\" class=\"btn btn-default dropdown-toggle\">默认<span class=\"caret\"></span></button><ul aria-labelledby=\"dropdown-cat-menu\" class=\"dropdown-menu\"><li><a href=\"#\">Action</a></li><li><a href=\"#\">Another action</a></li></ul></div></div><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\">");
+            if (article && article.tags) {
+                // iterate article.tags
+                ;
+                (function() {
+                    var $$obj = article.tags;
+                    if ('number' == typeof $$obj.length) {
 
-        buf.push("<link rel=\"stylesheet\" href=\"/mkEditor/styles/highlights/monokai_sublime.css\"/><link rel=\"stylesheet\" href=\"/mkEditor/styles/font-awesome.min.css\"/><div class=\"article-editor\"><h4>文章编辑</h4><div><form class=\"form-group\"><input placeholder=\"标题\" class=\"form-control article-title\"/><div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><div class=\"pull-left\"><span>类别: </span></div><div class=\"pull-left dropdown\"><button id=\"dropdown-cat-menu\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\" class=\"btn btn-default dropdown-toggle\">默认<span class=\"caret\"></span></button><ul aria-labelledby=\"dropdown-cat-menu\" class=\"dropdown-menu\"><li><a href=\"#\">Action</a></li><li><a href=\"#\">Another action</a></li></ul></div></div><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\"></div></div><div class=\"pull-right article-preview\"><btn data-toggle=\"modal\"><a href=\"#\">预览</a></btn></div></form><div style=\"clear:both\" class=\"article-editor-toolbar\"><div class=\"btn btn-default btn-xs btn-article-pic\"><span aria-hidden=\"true\" class=\"fa fa-file-image-o\"></span></div></div><textarea rows=\"20\" placeholder=\"正文，请使用markdown语法编辑\" class=\"form-control article-content\"></textarea></div><div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">发布文章</button></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div><div tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" class=\"modal dialog-upload-file\"><div class=\"modal-dialog\"><div class=\"modal-content\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button><h4 class=\"modal-title\">插入图片</h4></div><div class=\"modal-body\"><input type=\"file\" accept=\"image/png,image/gif,image/jpg,image/jpeg\" multiple=\"multiple\" style=\"display:none\" class=\"input-upload-img\"/><div class=\"input-group\"><span class=\"input-group-addon\"><span class=\"fa fa-file-image-o\"></span></span><input type=\"text\" class=\"form-control input-img-links\"/><span class=\"input-group-btn\"><button type=\"button\" onclick=\"$(&quot;input[class=input-upload-img]&quot;).click();\" class=\"btn\">...</button></span></div></div><div class=\"modal-footer\"><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default\">取消</button><button type=\"button\" class=\"btn btn-primary btn-confirm btn-upload-img\">确定</button></div></div></div></div></div>");;
+                        for (var $index = 0, $$l = $$obj.length; $index < $$l; $index++) {
+                            var tag = $$obj[$index];
+
+                            buf.push("<a class=\"article-tag pull-left\">" + (jade.escape(null == (jade_interp = tag) ? "" : jade_interp)) + "</a>");
+                        }
+
+                    } else {
+                        var $$l = 0;
+                        for (var $index in $$obj) {
+                            $$l++;
+                            var tag = $$obj[$index];
+
+                            buf.push("<a class=\"article-tag pull-left\">" + (jade.escape(null == (jade_interp = tag) ? "" : jade_interp)) + "</a>");
+                        }
+
+                    }
+                }).call(this);
+
+            }
+            buf.push("</div></div><div class=\"pull-right article-preview\"><btn data-toggle=\"modal\"><a href=\"#\">预览</a></btn></div></form><div style=\"clear:both\" class=\"article-editor-toolbar\"><div class=\"btn btn-default btn-xs btn-article-pic\"><span aria-hidden=\"true\" class=\"fa fa-file-image-o\"></span></div></div>");
+            if (article && article.content) {
+                buf.push("<textarea rows=\"20\" placeholder=\"正文，请使用markdown语法编辑\" class=\"form-control article-content\">" + (jade.escape(null == (jade_interp = article.content) ? "" : jade_interp)) + "</textarea>");
+            } else {
+                buf.push("<textarea rows=\"20\" placeholder=\"正文，请使用markdown语法编辑\" class=\"form-control article-content\"></textarea>");
+            }
+            buf.push("</div><div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">发布文章</button></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div><div tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" class=\"modal dialog-upload-file\"><div class=\"modal-dialog\"><div class=\"modal-content\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button><h4 class=\"modal-title\">插入图片</h4></div><div class=\"modal-body\"><input type=\"file\" accept=\"image/png,image/gif,image/jpg,image/jpeg\" multiple=\"multiple\" style=\"display:none\" class=\"input-upload-img\"/><div class=\"input-group\"><span class=\"input-group-addon\"><span class=\"fa fa-file-image-o\"></span></span><input type=\"text\" class=\"form-control input-img-links\"/><span class=\"input-group-btn\"><button type=\"button\" onclick=\"$(&quot;input[class=input-upload-img]&quot;).click();\" class=\"btn\">...</button></span></div></div><div class=\"modal-footer\"><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default\">取消</button><button type=\"button\" class=\"btn btn-primary btn-confirm btn-upload-img\">确定</button></div></div></div></div></div>");
+        }.call(this, "article" in locals_for_with ? locals_for_with.article : typeof article !== "undefined" ? article : undefined, "undefined" in locals_for_with ? locals_for_with.undefined : typeof undefined !== "undefined" ? undefined : undefined));;
         return buf.join("");
     }
 
@@ -77,7 +157,7 @@ define([
     // 解析用户输入的文章内容为HTML
     function _parseInputToHTML(article) {
         article.content = mkParser(article.content);
-        article.date_collected_HTML = _parseDate(article.date_collected);
+        article.date_collected_HTML = article.date_collected;
         article.titleHTML = "<div><h1 class='article-title'><a href='#'>" + article.title + "</a></h1><div class='article-meta'><span class='author'>类别：<a href='#'>" + article.category + "</a></span> &bull;<time class='article-date' datetime='" + article.date_collected + "' title='" + article.date_collected + "'>" + article.date_collected_HTML + "</time></div></div>";
 
         article.tagHTML = [];
@@ -209,51 +289,4 @@ define([
             $('.dialog-upload-file').modal('hide');
         });
     }
-
-    /**
-     * [render description]
-     * @param  {String} id            id of parent div
-     * @return null
-     */
-    function render(id) {
-        var parent = $('#' + id),
-            editor_html;
-
-        if (!id || !parent) {
-            console.log('invalid param for render method');
-            return;
-        }
-
-        // 1. 加载编辑器节点
-        editor_html = _template();
-        parent.html(editor_html);
-
-        // 2. 绑定事件
-        _attachEventListeners();
-    }
-
-    function remove(id) {
-        // 1. 解除事件绑定
-
-        // 2. 从页面移除editor节点
-        $('#' + id + ' .article-editor').remove();
-    }
-
-    /**
-     * Collect input info
-     * @return {Object}
-     * {
-     *     title: $('.article-title').val(),
-     *     category: ,
-     *     tags: [],
-     *     date_collected: new Date(),
-     *     content: $('.article-content').val()
-     * }
-     */
-    exports.collectInput = function() {
-        var res = _collectInput();
-        return (res.success === true) ? res.body : {};
-    };
-    exports.render = render;
-    exports.remove = remove;
 });

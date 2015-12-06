@@ -7,7 +7,7 @@ var map_limit = 10; // map limit count
 
 /* GET home page */
 router.get('/', function(req, res, next) {
-    async.parallel([
+    /*async.parallel([
         // get article list
         function(cb) {
             var page_idx = '0';
@@ -41,13 +41,13 @@ router.get('/', function(req, res, next) {
                 'tag_list': results[2]
             }
         });
-    });
+    });*/
 
-    /*res.render('index', {
+    res.render('index', {
         'title': 'SWORDARCHOR',
         'connStr': '-',
         'desc': '和冬瓜一起努力'
-    });*/
+    });
 });
 
 /* GET admin page */
@@ -143,15 +143,12 @@ router.get(version + '/categories', function(req, res, next) {
 
 /* Create a new article */
 router.post(version + '/article/create', function(req, res, next) {
-    var article = req.body;
-    model.saveArticle(article, function(err, json_str) {
-        res.send(json_str);
-    });
+    _saveArticleToDB(req.body, res);
 });
 
 /* Update an existing article */
 router.post(version + '/article/update/:id', function(req, res, next) {
-
+    _saveArticleToDB(req.body, res);
 });
 
 /* Delete an existing article by id */
@@ -168,6 +165,17 @@ router.get(version + '/test', function(req, res, next) {
 });
 
 module.exports = router;
+
+/**
+ * Save single article to database
+ * @param  {Object} article [description]
+ * @return {[type]}         [description]
+ */
+function _saveArticleToDB(article, res) {
+    model.saveArticle(article, function(err, json_str) {
+        res.send(json_str);
+    });
+}
 
 /**
  * Extract

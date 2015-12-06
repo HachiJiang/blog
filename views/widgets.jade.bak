@@ -1,17 +1,25 @@
 //- category list
 aside(class='widget widget-category')
   h3(class='widget-title') 分类
-  ul(id='widget-cat-list')
+  ul
+    - var cat_list = widgets.cat_list
+    each cat in cat_list
+      li(class='cat-item')&attributes({'id': 'cat-' + cat.category_id})
+        a(href='#')= cat.category_name
 
 //- date list
 aside(class='widget widget-archive')
   h3(class='widget-title') 存档页
-  ul(id='widget-archive-list')
+  ul
 
 //- tag list
 aside(class='widget widget-tag')
   h3(class='widget-title') 标签
-  div(id='widget-tag-list')
+  - var tag_list = widgets.tag_list
+  div
+    each tag in tag_list
+      span
+        a&attributes({'id': 'tag-' + tag.tag_id})(href='#', class='tag-link')= tag.tag_name
 
 //- additional links
 aside(class='widget widget-links')

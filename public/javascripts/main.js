@@ -4,10 +4,10 @@ requirejs.config({
     paths: {
         'jquery': 'javascripts/lib/jquery.min',
         'bootstrap': 'javascripts/lib/bootstrap.min',
-        'home': 'javascripts/home',
         'mkEditor': 'mkEditor/mkEditor',
         'runtime': 'javascripts/lib/runtime',
         'articleProc': 'javascripts/app/articleProc',
+        'widgetProc': 'javascripts/app/widgetProc',
         'XHR': 'javascripts/app/XHR'
     },
     shim: {
@@ -20,21 +20,43 @@ requirejs.config({
 
 /* entry */
 require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
-    require(['articleProc', 'XHR'], function(articleProc, XHR) {
+    require(['articleProc', 'widgetProc', 'XHR'], function(articleProc, widgetProc, XHR) {
         $(function() {
-            /* add event listeners */
+            /* Render articles */
+            XHR.getArticlesByPageIdx(0, articleProc.displayArticles);
+            /* Render sidebars */
+            XHR.getCategories(widgetProc.displayCategories);
+            XHR.getTags(widgetProc.displayTags);
+
+            /* Add event listeners */
             // 用户登录事件
             $('#login-submit').on('click', function() {
 
             });
 
-            // 添加 新建文章入口。暂时不需login
+            // @TO_DO: 添加 新建文章入口。暂时不需login
             $('#secondary').prepend('<aside class="widget widget-edit"><a href="#" id="btn-article-create" class="btn btn-default btn-block">新建文章</a><aside>');
 
-            // 切换至文章编辑
+            // 显示单篇文章详情页
+            $('#primary').on('click', '.article-title a', function() {
+                var id = $(this).parents('article').attr('id').split('-')[1];
+                XHR.getArticleById(id, articleProc.displayArticle);
+            });
+            $('#primary').on('click', '.article-permalink a', function() {
+                var id = $(this).parents('article').attr('id').split('-')[1];
+                XHR.getArticleById(id, articleProc.displayArticle);
+            });
+
+            // 切换至新文章编辑
             $('#secondary').on('click', '#btn-article-create', function() {
                 articleProc.renderEditor('primary');
                 $('#primary .article-editor').attr('id', '-1');
+            });
+
+            // 切换至已有文章编辑
+            $('#primary').on('click', '.edit-link', function() {
+                var id = $(this).parents('article').attr('id').split('-')[1];
+                XHR.getArticleById(id, articleProc.loadArticleInEditor);
             });
 
             // 发布文章，页面跳转显示正文全文
@@ -43,21 +65,22 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
                 if (article === {}) return;
 
                 // 获取文章id
-                article.id = $('#primary .article-editor').attr('id');
+                article.article_id = $('#primary .article-editor').attr('id');
                 // 更新时间
-                article.date_created = article.date_collected;
-                article.date_modified = article.date_collected;
+                
+                if (article.article_id === '-1') {
+                    article.article_date_created = article.article_date_modified;
+                }
                 // @TO_DO: 获取当前username
-                article.author = 'swordarchor';
+                article.user_name = 'swordarchor';
                 // 添加已发布文章的flag
-                article.status = '2';
+                article.status_id = '2';
                 // 初始化comments
                 article.comments = '';
                 // @TO_DO: 初始化统计信息
                 article.article_statistics = '';
 
                 XHR.saveArticle(article, articleProc.displayArticle);
-                // XHR.requestArticleToDisplay(article);
             });
 
             // 退出编辑

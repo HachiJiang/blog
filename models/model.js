@@ -204,10 +204,11 @@ exports.saveArticle = function(article, resCalbk) {
             date_modified = connection.escape(article.article_date_modified),
             tags = article.tags;
 
-        content = content.substr(1, content.length-2);
+        //content = content.substr(1, content.length - 2);
         // get user_id by user_name
         var getUserIdByName = function(sql, cb1) {
             connection.query(sql, function(err, results) {
+                console.log('get user_id: ' + results[0].user_id);
                 _errorHandler(err, results, cb1);
                 cb1(null, results[0].user_id);
             });
@@ -243,19 +244,25 @@ exports.saveArticle = function(article, resCalbk) {
 
             if (article_id === '-1') {
                 // 新建
-                sql_0 = 'INSERT tbl_articles (article_title, category_id, article_date_created, article_date_modified, user_id, status_id, article_content, article_statistics) VALUES ' +
-                    '("' + article.article_title + '", "' + category_id + '", ' + date_created + ', ' + date_modified + ', "' +
-                    user_id + '", "' + article.status_id + '", "' + content + '", "' + article.article_statistics + '")';
+                sql_0 = "INSERT tbl_articles (article_title, category_id, article_date_created, article_date_modified, user_id, status_id, article_content, article_statistics) VALUES " +
+                    "('" + article.article_title + "', '" + category_id + "', " + date_created + ", " + date_modified + ", '" +
+                    user_id + "', '" + article.status_id + "', '" + content + "', '" + article.article_statistics + "')";
             } else {
                 // 更新
-                sql_0 = 'UPDATE tbl_articles SET article_title="' + article.article_title + '", category_id="' + category_id +
-                    '", article_date_modified=' + date_modified + ', user_id="' + user_id + '", status_id="' + article.status_id +
-                    '", article_content=' + content + ', article_statistics="' + article.article_statistics + '" WHERE article_id="' + article_id + '"';
+                // sql_0 = 'UPDATE tbl_articles SET article_title="' + article.article_title + '", category_id="' + category_id +
+                //     '", article_date_modified=' + date_modified + ', user_id="' + user_id + '", status_id="' + article.status_id +
+                //     '", article_content=' + content + ', article_statistics="' + article.article_statistics + '" WHERE article_id="' + article_id + '"';
+                sql_0 = "UPDATE tbl_articles SET article_title='" + article.article_title + "', category_id='" + category_id +
+                    "', article_date_modified=" + date_modified + ", user_id='" + user_id + "', status_id='" + article.status_id +
+                    "', article_content=" + content + ", article_statistics='" + article.article_statistics + "' WHERE article_id='" + article_id + "'";
             }
 
             connection.query(sql_0, function(err, results) {
                 article_id = (article_id !== '-1') ? article.article_id : results.insertId;
+                console.log(err);
+                console.log(sql_0);
                 _errorHandler(err, results, cb1);
+                console.log('save the article as id=' + article_id + ' successfully');
                 cb1(null, article_id);
             });
         };
@@ -274,6 +281,7 @@ exports.saveArticle = function(article, resCalbk) {
                 sql_0 += tagArr.join(',');
                 connection.query(sql_0, function(err, results) {
                     _errorHandler(err, results, cb1);
+                    console.log('update tbl_tags successfully.');
                     cb1(null, article_id);
                 });
             } else {

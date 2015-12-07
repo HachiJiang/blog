@@ -89,7 +89,7 @@ define([
             } else {
                 buf.push("<input placeholder=\"标题\" class=\"form-control article-title\"/>");
             }
-            buf.push("<div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><div class=\"pull-left\"><span>类别: </span></div><div class=\"pull-left dropdown\"><button id=\"dropdown-cat-menu\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\" class=\"btn btn-default dropdown-toggle\">默认<span class=\"caret\"></span></button><ul aria-labelledby=\"dropdown-cat-menu\" class=\"dropdown-menu\"><li><a href=\"#\">Action</a></li><li><a href=\"#\">Another action</a></li></ul></div></div><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\">");
+            buf.push("<div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><div class=\"pull-left\"><span>类别: </span></div><div class=\"pull-left dropdown\"><a id=\"dropdown-cat-menu\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\" class=\"btn btn-default btn-xs dropdown-toggle\">默认<span class=\"caret\"></span></a><ul aria-labelledby=\"dropdown-cat-menu\" class=\"dropdown-menu\"><li><a role=\"separator\" class=\"divider\"></a></li><li><a href=\"#\">Add...</a></li></ul></div></div><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\">");
             if (article && article.tags) {
                 // iterate article.tags
                 ;
@@ -197,8 +197,11 @@ define([
 
     // 绑定事件
     function _attachEventListeners() {
+        var editor = $('.article-editor'),
+            dialog_upload = $('.dialog-upload-file');
+
         // 预览文章，弹出模态框
-        $('.article-editor').on('click', '.article-preview', function() {
+        editor.on('click', '.article-preview', function() {
             var valid = _collectInput(),
                 preview_html,
                 dialog_preview;
@@ -210,8 +213,11 @@ define([
             dialog_preview.modal();
         });
 
+        // 类别选择
+        $('#dropdown-cat-menu').dropdown();
+
         // 点击 添加标签
-        $('.article-editor').on('click', '.btn-tag-add a', function(e) {
+        editor.on('click', '.btn-tag-add a', function(e) {
             e.preventDefault();
             if ($('.article-tag-list input').length > 0) return;
             var tag_input = $('<input type="text" class="article-tag pull-left"></input>');
@@ -220,7 +226,7 @@ define([
         });
 
         // 输入标签转为a
-        $('.article-editor').on('keydown', '.article-tag-list input', function(e) {
+        editor.on('keydown', '.article-tag-list input', function(e) {
             if (e.which === 13) {
                 e.preventDefault();
                 var tag_node = $('<a class="article-tag pull-left"></a>');
@@ -231,33 +237,33 @@ define([
         });
 
         // 标签mouse over时浮动显示删除icon
-        $('.article-editor').on('mouseenter', '.article-tag', function() {
+        editor.on('mouseenter', '.article-tag', function() {
             $(this).append('<i class="fa fa-times"></i>');
         });
-        $('.article-editor').on('mouseleave', '.article-tag', function() {
+        editor.on('mouseleave', '.article-tag', function() {
             $(this).find('.fa-times').remove();
         });
 
         // 点击标签的删除icon
-        $('.article-editor').on('click', '.fa-times', function() {
+        editor.on('click', '.fa-times', function() {
             $(this).parents('.article-tag').remove();
         });
 
         // 点击图片icon 插入图片
-        $('.article-editor').on('click', '.btn-article-pic', function() {
+        editor.on('click', '.btn-article-pic', function() {
             $('.dialog-upload-file').modal({
                 keyboard: false
             });
         });
 
         // 显示前重置上传表单
-        $('.dialog-upload-file').on('hidden.bs.modal', function() {
+        dialog_upload.on('hidden.bs.modal', function() {
             $(this).find('.input-upload-img').val("");
             $(this).find('.input-img-links').val("");
         });
 
         // 上传文件时，显示文件列表
-        $('.dialog-upload-file').on('change', '.input-upload-img', function() {
+        dialog_upload.on('change', '.input-upload-img', function() {
             var files = $(this).prop('files');
             var len = files.length;
             var filenames = files[0].name;
@@ -268,7 +274,7 @@ define([
         });
 
         // 生成文件链接内容
-        $('.dialog-upload-file').on('click', '.btn-upload-img', function() {
+        dialog_upload.on('click', '.btn-upload-img', function() {
             var files = $('.input-upload-img').prop('files'),
                 len = files.length,
                 imgHTML = '',

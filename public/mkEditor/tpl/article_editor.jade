@@ -14,13 +14,13 @@ div(class='article-editor')
           div(class='pull-left')
             span 类别: 
           div(class='pull-left dropdown')
-            button(id='dropdown-cat-menu', class='btn btn-default dropdown-toggle', type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='true') 默认
+            a(id='dropdown-cat-menu', href='#', class='btn btn-default btn-xs dropdown-toggle', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') 默认
               span(class='caret')
             ul(class='dropdown-menu', aria-labelledby='dropdown-cat-menu')
               li
-                a(href='#') Action
+                a(role='separator', class='divider')
               li
-                a(href='#') Another action
+                a(href='#') Add...
         btn(class='pull-left btn-tag-add')
           a(href='#') 添加标签
         div(class='pull-left article-tag-list')

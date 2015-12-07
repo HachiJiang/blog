@@ -54,11 +54,12 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
      * @return {[type]}         [description]
      */
     exports.loadArticleInEditor = function(list) {
-        var article = list[0];
+        var article = list[0],
+            tags = article.tags;
         mkEditor.render('primary', {
             'title': article.article_title,
             'category': article.category_name,
-            'tags': article.tags.split(','),
+            'tags': (tags !== '') ? article.tags.split(',') : [],
             'content': article.article_content
         });
         $('.article-editor').attr('id', article.article_id);

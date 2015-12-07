@@ -89,7 +89,7 @@ define([
             } else {
                 buf.push("<input placeholder=\"标题\" class=\"form-control article-title\"/>");
             }
-            buf.push("<div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><div class=\"pull-left\"><span>类别: </span></div><div class=\"pull-left dropdown\"><a id=\"dropdown-cat-menu\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\" class=\"btn btn-default btn-xs dropdown-toggle\">默认<span class=\"caret\"></span></a><ul aria-labelledby=\"dropdown-cat-menu\" class=\"dropdown-menu\"><li><a role=\"separator\" class=\"divider\"></a></li><li><a href=\"#\">Add...</a></li></ul></div></div><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\">");
+            buf.push("<div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><div class=\"pull-left\"><span>类别: </span></div><div class=\"pull-left dropdown\"><a id=\"dropdown-cat-menu\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\" class=\"btn btn-default btn-xs dropdown-toggle\">默认<span class=\"caret\"></span></a><ul aria-labelledby=\"dropdown-cat-menu\" class=\"dropdown-menu\"><li><a role=\"separator\" class=\"divider\"></a></li><li class=\"cat-add-link\"><a href=\"#\">Add...</a></li></ul></div></div><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\">");
             if (article && article.tags) {
                 // iterate article.tags
                 ;
@@ -122,7 +122,7 @@ define([
             } else {
                 buf.push("<textarea rows=\"20\" placeholder=\"正文，请使用markdown语法编辑\" class=\"form-control article-content\"></textarea>");
             }
-            buf.push("</div><div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">发布文章</button></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div><div tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" class=\"modal dialog-upload-file\"><div class=\"modal-dialog\"><div class=\"modal-content\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button><h4 class=\"modal-title\">插入图片</h4></div><div class=\"modal-body\"><input type=\"file\" accept=\"image/png,image/gif,image/jpg,image/jpeg\" multiple=\"multiple\" style=\"display:none\" class=\"input-upload-img\"/><div class=\"input-group\"><span class=\"input-group-addon\"><span class=\"fa fa-file-image-o\"></span></span><input type=\"text\" class=\"form-control input-img-links\"/><span class=\"input-group-btn\"><button type=\"button\" onclick=\"$(&quot;input[class=input-upload-img]&quot;).click();\" class=\"btn\">...</button></span></div></div><div class=\"modal-footer\"><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default\">取消</button><button type=\"button\" class=\"btn btn-primary btn-confirm btn-upload-img\">确定</button></div></div></div></div></div>");
+            buf.push("<div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">发布文章</button></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div><div tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" class=\"modal dialog-upload-file\"><div class=\"modal-dialog\"><div class=\"modal-content\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button><h4 class=\"modal-title\">插入图片</h4></div><div class=\"modal-body\"><input type=\"file\" accept=\"image/png,image/gif,image/jpg,image/jpeg\" multiple=\"multiple\" style=\"display:none\" class=\"input-upload-img\"/><div class=\"input-group\"><span class=\"input-group-addon\"><span class=\"fa fa-file-image-o\"></span></span><input type=\"text\" class=\"form-control input-img-links\"/><span class=\"input-group-btn\"><button type=\"button\" onclick=\"$(&quot;input[class=input-upload-img]&quot;).click();\" class=\"btn\">...</button></span></div></div><div class=\"modal-footer\"><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default\">取消</button><button type=\"button\" class=\"btn btn-primary btn-confirm btn-upload-img\">确定</button></div></div></div></div></div></div>");
         }.call(this, "article" in locals_for_with ? locals_for_with.article : typeof article !== "undefined" ? article : undefined, "undefined" in locals_for_with ? locals_for_with.undefined : typeof undefined !== "undefined" ? undefined : undefined));;
         return buf.join("");
     }
@@ -197,11 +197,11 @@ define([
 
     // 绑定事件
     function _attachEventListeners() {
-        var editor = $('.article-editor'),
-            dialog_upload = $('.dialog-upload-file');
+        var editor_div = $('.article-editor'),
+            dialog_upload_div = $('.dialog-upload-file');
 
         // 预览文章，弹出模态框
-        editor.on('click', '.article-preview', function() {
+        editor_div.on('click', '.article-preview', function() {
             var valid = _collectInput(),
                 preview_html,
                 dialog_preview;
@@ -217,7 +217,7 @@ define([
         $('#dropdown-cat-menu').dropdown();
 
         // 点击 添加标签
-        editor.on('click', '.btn-tag-add a', function(e) {
+        editor_div.on('click', '.btn-tag-add a', function(e) {
             e.preventDefault();
             if ($('.article-tag-list input').length > 0) return;
             var tag_input = $('<input type="text" class="article-tag pull-left"></input>');
@@ -226,7 +226,7 @@ define([
         });
 
         // 输入标签转为a
-        editor.on('keydown', '.article-tag-list input', function(e) {
+        editor_div.on('keydown', '.article-tag-list input', function(e) {
             if (e.which === 13) {
                 e.preventDefault();
                 var tag_node = $('<a class="article-tag pull-left"></a>');
@@ -237,33 +237,33 @@ define([
         });
 
         // 标签mouse over时浮动显示删除icon
-        editor.on('mouseenter', '.article-tag', function() {
+        editor_div.on('mouseenter', '.article-tag', function() {
             $(this).append('<i class="fa fa-times"></i>');
         });
-        editor.on('mouseleave', '.article-tag', function() {
+        editor_div.on('mouseleave', '.article-tag', function() {
             $(this).find('.fa-times').remove();
         });
 
         // 点击标签的删除icon
-        editor.on('click', '.fa-times', function() {
+        editor_div.on('click', '.fa-times', function() {
             $(this).parents('.article-tag').remove();
         });
 
         // 点击图片icon 插入图片
-        editor.on('click', '.btn-article-pic', function() {
+        editor_div.on('click', '.btn-article-pic', function() {
             $('.dialog-upload-file').modal({
                 keyboard: false
             });
         });
 
         // 显示前重置上传表单
-        dialog_upload.on('hidden.bs.modal', function() {
+        dialog_upload_div.on('hidden.bs.modal', function() {
             $(this).find('.input-upload-img').val("");
             $(this).find('.input-img-links').val("");
         });
 
         // 上传文件时，显示文件列表
-        dialog_upload.on('change', '.input-upload-img', function() {
+        dialog_upload_div.on('change', '.input-upload-img', function() {
             var files = $(this).prop('files');
             var len = files.length;
             var filenames = files[0].name;
@@ -274,7 +274,7 @@ define([
         });
 
         // 生成文件链接内容
-        dialog_upload.on('click', '.btn-upload-img', function() {
+        dialog_upload_div.on('click', '.btn-upload-img', function() {
             var files = $('.input-upload-img').prop('files'),
                 len = files.length,
                 imgHTML = '',

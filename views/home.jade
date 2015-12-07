@@ -59,6 +59,7 @@ footer(class='site-footer')
   div(class='container')
     p Copyright (c) Swordarchor - 在前端开发的路上.
 
+//- login dialog
 div(id='login', class='modal fade', tagindex='-1', role='dialog', aria-labelledby='login-label' aria-hidden='true')
   div(class='modal-dialog modal-sm')
     div(class='modal-content')
@@ -71,5 +72,16 @@ div(id='login', class='modal fade', tagindex='-1', role='dialog', aria-labelledb
         input(id='login-username', type='text', class='form-control', placeholder='Username...')
         input(id='login-password', type='text', class='form-control', placeholder='Password...')
       div(class='modal-footer')
-        button(type='button', class='btn btn-default', data-dismiss='modal') Cancle
+        button(type='button', class='btn btn-default', data-dismiss='modal') Cancel
         button(id='login-submit', class='btn btn-primary') OK
+
+//- input dialog
+div(id='dialog-input', class='modal', tagindex='-1', role='dialog', aria-hidden='true')
+  div(class='modal-dialog modal-sm')
+    div(class='modal-content')
+      div(class='modal-body')
+        input(id='login-username', type='text', class='form-control')
+        button(type='button', class='btn btn-default', data-dismiss='modal') Cancel
+        button(type='button', class='btn btn-primary') OK
+
+//- warning dialog

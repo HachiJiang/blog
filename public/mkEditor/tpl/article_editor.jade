@@ -19,7 +19,7 @@ div(class='article-editor')
             ul(class='dropdown-menu', aria-labelledby='dropdown-cat-menu')
               li
                 a(role='separator', class='divider')
-              li
+              li(class='cat-add-link')
                 a(href='#') Add...
         btn(class='pull-left btn-tag-add')
           a(href='#') 添加标签
@@ -37,33 +37,33 @@ div(class='article-editor')
       textarea(rows='20', class='form-control article-content', placeholder='正文，请使用markdown语法编辑')= article.content
     else
       textarea(rows='20', class='form-control article-content', placeholder='正文，请使用markdown语法编辑')
-  div(class='pull-right')
-    button(type='button', class='btn btn-default btn-editor-exit') 退出编辑
-    button(type='button', class='btn btn-primary btn-editor-save') 发布文章
+    div(class='pull-right')
+      button(type='button', class='btn btn-default btn-editor-exit') 退出编辑
+      button(type='button', class='btn btn-primary btn-editor-save') 发布文章
 
-  //- 文章预览窗口
-  div(class='modal dialog-article-preview', tagindex='-1', role='dialog', aria-hidden='true')
-    div(class='modal-dialog modal-lg')
-      div(class='modal-content')
-        div(class='modal-body')
-          p 预览内容
+    //- 文章预览窗口
+    div(class='modal dialog-article-preview', tagindex='-1', role='dialog', aria-hidden='true')
+      div(class='modal-dialog modal-lg')
+        div(class='modal-content')
+          div(class='modal-body')
+            p 预览内容
 
-  //- 上传文件窗口
-  div(class='modal dialog-upload-file', tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-    div(class='modal-dialog')
-      div(class='modal-content')
-        div(class='modal-header')
-          button(type='button', class='close', data-dismiss='modal', aria-label='Close')
-            span(aria-hidden='true') &times;
-          h4(class='modal-title') 插入图片
-        div(class='modal-body')
-          input(class='input-upload-img', type='file', accept='image/png,image/gif,image/jpg,image/jpeg', multiple='multiple', style='display:none')
-          div(class='input-group')
-            span(class='input-group-addon')
-              span(class='fa fa-file-image-o')
-            input(type='text', class='form-control input-img-links')
-            span(class='input-group-btn')
-              button(class='btn', type='button', onclick='$("input[class=input-upload-img]").click();') ...
-        div(class='modal-footer')
-          button(type='button', class='btn btn-default', data-dismiss='modal') 取消
-          button(type='button', class='btn btn-primary btn-confirm btn-upload-img') 确定
+    //- 上传文件窗口
+    div(class='modal dialog-upload-file', tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      div(class='modal-dialog')
+        div(class='modal-content')
+          div(class='modal-header')
+            button(type='button', class='close', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') &times;
+            h4(class='modal-title') 插入图片
+          div(class='modal-body')
+            input(class='input-upload-img', type='file', accept='image/png,image/gif,image/jpg,image/jpeg', multiple='multiple', style='display:none')
+            div(class='input-group')
+              span(class='input-group-addon')
+                span(class='fa fa-file-image-o')
+              input(type='text', class='form-control input-img-links')
+              span(class='input-group-btn')
+                button(class='btn', type='button', onclick='$("input[class=input-upload-img]").click();') ...
+          div(class='modal-footer')
+            button(type='button', class='btn btn-default', data-dismiss='modal') 取消
+            button(type='button', class='btn btn-primary btn-confirm btn-upload-img') 确定

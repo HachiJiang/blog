@@ -2,10 +2,10 @@
 
 define(['jquery', 'mkEditor', 'exports'], function(jquery, mkEditor, exports) {
     var _catTpl = function(cat_id, cat_name) {
-        return '<li class="cat-item" id=cat-' + cat_id + '><a href="#">' + cat_name + '</a></li>';
+        return '<li class="cat-item" id=cat-' + cat_id + '><span class="glyphicon glyphicon-folder-open"><a href="#">' + cat_name + '</a></span></li>';
     };
     var _tagTpl = function(tag_id, tag_name) {
-        return '<span><a href="#" class="tag-link" id=' + tag_id + '>' + tag_name + '</a></span>';
+        return '<a href="#" class="tag-link" id=' + tag_id + '>' + tag_name + '</a>';
     };
 
     /**

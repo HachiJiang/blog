@@ -12,14 +12,11 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
     exports.displayArticle = function(list) {
         var article = list[0],
             articleNd = _generateArticleHTML(article),
-            parent = $('#primary');
+            parent = $('#content-wrap');
 
         articleNd.find('.article-permalink').remove();
         parent.html('');
         parent.append(articleNd);
-        // @TO_DO: 暂时忽略login, 添加编辑入口，应放入login验证通过方法
-        $('.article-footer').append('<span class="edit-link"><a href="#">编辑</a></span>');
-        $('.article-footer').append('<span class="delete-link"><a href="#">删除</a></span>');
     };
 
     /**
@@ -42,10 +39,6 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
             articleNd = _generateArticleHTML(article);
             parent.append(articleNd);
         }
-
-        // @TO_DO: 暂时忽略login, 添加编辑入口
-        $('.article-footer').append('<span class="edit-link"><a href="#">编辑</a></span>');
-        $('.article-footer').append('<span class="delete-link"><a href="#">删除</a></span>');
     };
 
     /**
@@ -56,7 +49,7 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
     exports.loadArticleInEditor = function(list) {
         var article = list[0],
             tags = article.tags;
-        mkEditor.render('primary', {
+        mkEditor.render('content-wrap', {
             'title': article.article_title,
             'category': article.category_name,
             'tags': (tags !== '') ? article.tags.split(',') : [],
@@ -97,11 +90,15 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
                 "class": "article"
             }, {
                 'id': 'article-' + article.article_id
-            }]), false)) + "><header class=\"article-header\"><h1 class=\"article-title\"><a href=\"#\">" + (jade.escape((jade_interp = article.article_title) == null ? '' : jade_interp)) + "</a></h1><div class=\"article-meta\"><span class=\"article-author\">作者:<a href=\"#\">" + (jade.escape((jade_interp = article.user_name) == null ? '' : jade_interp)) + "</a></span><span> · </span><span class=\"article-created-on\">更新于 <a><time class=\"article-date-created\"></time><time" + (jade.attrs(jade.merge([{
+            }]), false)) + "><header class=\"article-header\"><h2 class=\"article-title\"><a href=\"#\">" + (jade.escape(null == (jade_interp = article.article_title) ? "" : jade_interp)) + "</a></h2><div class=\"article-meta entry-meta\"><span class=\"glyphicon glyphicon-user article-author\"><a>" + (jade.escape(null == (jade_interp = article.user_name) ? "" : jade_interp)) + "</a></span><span class=\"article-created-on\">创建于<a><time" + (jade.attrs(jade.merge([{
+                "class": "created"
+            }, {
+                'datetime': article.article_date_created
+            }]), false)) + ">" + (jade.escape(null == (jade_interp = article.article_date_created) ? "" : jade_interp)) + "</time></a></span><span class=\"article-updated-on\">更新于 <a><time" + (jade.attrs(jade.merge([{
                 "class": "updated"
             }, {
                 'datetime': article.article_date_modified
-            }]), false)) + ">" + (jade.escape((jade_interp = article.article_date_modified) == null ? '' : jade_interp)) + "</time></a></span></div></header><div class=\"article-content\"></div><div class=\"article-permalink\"><a href=\"#\" class=\"btn btn-default\">阅读全文</a></div><footer class=\"article-footer\"><span class=\"cat-links\"><a>" + (jade.escape((jade_interp = article.category_name) == null ? '' : jade_interp)) + "</a></span><div class=\"pull-left tag-list\"><i class=\"fa fa-footer clearfix\"></i><a href=\"#\"></a></div><span class=\"tag-links\"><a>" + (jade.escape((jade_interp = article.tags) == null ? '' : jade_interp)) + "</a></span></footer></article>");
+            }]), false)) + ">" + (jade.escape(null == (jade_interp = article.article_date_modified) ? "" : jade_interp)) + "</time></a></span></div></header><div class=\"article-content\"></div><div class=\"article-permalink\"><a href=\"#\" class=\"btn btn-default\">阅读全文</a></div><footer class=\"article-footer entry-meta\"><span class=\"cat-links\"><span class=\"glyphicon glyphicon-folder-open\"><a href=\"#\">" + (jade.escape(null == (jade_interp = article.category_name) ? "" : jade_interp)) + "</a></span></span><span class=\"tag-links\"><span class=\"glyphicon glyphicon-tags\"><a>" + (jade.escape(null == (jade_interp = article.tags) ? "" : jade_interp)) + "</a></span></span><span class=\"glyphicon glyphicon-edit\"><a href=\"#\" class=\"edit-link\">编辑</a></span><span aria-hidden=\"true\" class=\"glyphicon glyphicon-trash\"><a href=\"#\" class=\"del-link\">删除</a></span></footer></article>");
         }.call(this, "article" in locals_for_with ? locals_for_with.article : typeof article !== "undefined" ? article : undefined));;
         return buf.join("");
     }

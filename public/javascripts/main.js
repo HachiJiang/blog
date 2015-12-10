@@ -22,7 +22,7 @@ requirejs.config({
 require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
     require(['articleProc', 'widgetProc', 'XHR'], function(articleProc, widgetProc, XHR) {
         $(function() {
-            var prim_div = $('#primary'),
+            var content_div = $('#content-wrap'),
                 sec_div = $('#secondary'),
                 pagi_div = $('#content-pagination');
 
@@ -42,16 +42,17 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             sec_div.prepend('<aside class="widget widget-edit"><a href="#" id="btn-article-create" class="btn btn-default btn-block">新建文章</a><aside>');
 
             // 显示单篇文章详情页
-            prim_div.on('click', '.article-title a', function() {
+            content_div.on('click', '.article-title a', function() {
                 var id = $(this).parents('article').attr('id').split('-')[1];
                 XHR.getArticleById(id, articleProc.displayArticle);
             });
-            prim_div.on('click', '.article-permalink a', function() {
+            content_div.on('click', '.article-permalink a', function() {
                 var id = $(this).parents('article').attr('id').split('-')[1];
                 XHR.getArticleById(id, articleProc.displayArticle);
             });
 
             // 切换至新文章编辑
+            // @TO_DO: Needs login
             $('#secondary').on('click', '#btn-article-create', function() {
                 articleProc.renderEditor('content-wrap');
                 $('#primary .article-editor').attr('id', '-1');
@@ -59,14 +60,14 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             });
 
             // 切换至已有文章编辑
-            prim_div.on('click', '.edit-link', function() {
+            content_div.on('click', '.edit-link', function() {
                 var id = $(this).parents('article').attr('id').split('-')[1];
                 XHR.getArticleById(id, articleProc.loadArticleInEditor);
                 pagi_div.hide();
             });
 
             // 发布文章，页面跳转显示正文全文
-            prim_div.on('click', '.btn-editor-save', function() {
+            content_div.on('click', '.btn-editor-save', function() {
                 var article = articleProc.collectInput();
                 if (article === {}) return;
 
@@ -89,28 +90,19 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             });
 
             // 退出编辑
-            prim_div.on('click', '.article-editor .btn-editor-exit', function() {
+            content_div.on('click', '.article-editor .btn-editor-exit', function() {
                 // 获取文章id
                 var id = $('#primary .article-editor').attr('id'),
                     page_idx;
                 if (id !== '-1') {
                     XHR.getArticleById(id, articleProc.displayArticle);
+                    pagi_div.hide();
                 } else {
                     page_idx = 0; // @TO_DO: 获取当前页
                     XHR.getArticlesByPageIdx(page_idx, articleProc.displayArticles);
                     pagi_div.show();
                 }
             });
-
-            /* 完善editor功能之：类别管理 */
-            // 新增category item
-            prim_div.on('click', '.article-editor .cat-add-link a', function(e) {
-                e.preventDefault();
-                $('#dialog-input').modal({
-                    keyboard: false
-                });
-            });
-
         });
     });
 });

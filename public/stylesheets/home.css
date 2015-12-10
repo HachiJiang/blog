@@ -14,12 +14,12 @@ body {
 
 .site-header {
     background: #bed4df;
+    /*background-color: #ff7900;*/
     text-align: center;
 }
 
 .site-header h1 {
     color: rgba(255, 255, 255, 0.9);
-    /*font-size: 7.0rem;*/
     font-weight: 900;
     line-height: 1em;
     margin: 0;
@@ -27,7 +27,7 @@ body {
 
 .site-header h4 {
     color: #789;
-    font-size: 1.5rem;
+    font-size: 1.5em;
     font-weight: 500;
     line-height: 1.8;
     margin-top: 0.9em;
@@ -58,27 +58,6 @@ body {
     text-align: center;
 }
 
-.article-header {
-    margin: 0 0 20px;
-}
-
-.article-title {
-    font-weight: 700;
-    font-height: 1.3;
-    word-wrap: break-word;
-}
-
-.article-meta {
-    color: #426f86;
-    font-family: Raleway, Aral, Helvetica, sans-serif;
-    font-size: 1.3rem;
-    margin-top: 1em;
-}
-
-.article-content {
-    margin-bottom: 30px;
-}
-
 #secondary {
     clear: right;
 }
@@ -90,7 +69,6 @@ body {
     margin: 0 0 35px;
     word-wrap: break-word;
 }
-
 .widget-title {
     border-bottom: 5px solid #dfdfdf;
     font-size: 1.2em;
@@ -100,10 +78,29 @@ body {
     padding-bottom: 10px;
     text-transform: uppercase;
 }
+.widget ul {
+    padding-left: 0;
+    color: #959595;
+}
+.widget ul li {
+    margin-left: 0;
+    padding: 5px 0;
+    list-style: none;
+}
+#widget-tag-list a {
+    line-height: 1.5em;
+    display: inline-block;
+    margin: 0 5px 5px 0;
+}
+
+#widget-cat-list span:before {
+    margin-right: 10px;
+}
 
 #login-username {
     margin-bottom: 5px;
 }
+
 #login .modal-header,
 #login .modal-body,
 #login .modal-footer {
@@ -111,7 +108,14 @@ body {
     padding-bottom: 5px;
 }
 
+
+h4, h5, h6 {
+    margin-top: 1em;
+    margin-bottom: 10px;
+}
+
 /**** Element: a ****/
+
 a {
     color: #426f86;
     text-decoration: none;
@@ -130,22 +134,70 @@ a {
 .navbar-default .navbar-nav > .active > a:hover {
     background-color: #3F4C5D;
 }
+
 .navbar-default .navbar-nav > .active > a {
     background-color: #3F4C5D;
+}
+
+.article a:hover {
+    text-decoration: none;
 }
 
 .article-title a {
     color: #323e4e;
 }
 
-/* 代码块 */
-.article-content pre {
-    margin: 0;
-    padding: 0;
-    border: none;
-    line-height: 1.5em;
+
+/* article related */
+
+.article {
+    margin-bottom: 35px;
+    padding: 20px 30px;
+    /*border: 1px solid #e1e1e1;*/
 }
 
-pre code.hljs {
+.article .article-head {
+    margin: 0;
+}
+
+.entry-meta {
+    color: #959595;
+    margin: 14px 0 0;
+    font-family: Raleway, Aral, Helvetica, sans-serif;
+    font-size: 0.9em;
+    text-align: right;
+}
+
+.entry-meta>span {
+    margin-right: 15px;
+}
+
+.entry-meta span:before {
+    margin-right: 5px;
+}
+
+.article .article-permalink {
+    text-align: right;
+}
+
+.article .article-content {
+    margin: 30px 0;
+    line-height: 1.6em;
+}
+
+.article .article-footer {
+    margin-top: 20px;
+    padding: 20px 0 0;
+    border-top: 1px solid #ebebeb;
+    text-align: right;
+}
+
+.article-content pre {
+    padding: 0;
+    border: none;
+    line-height: 1.6em;
+}
+
+.article pre code {
     padding: 15px;
 }

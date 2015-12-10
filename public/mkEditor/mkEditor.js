@@ -50,6 +50,7 @@ define([
             return;
         }
 
+        parent.html();
         // 1. 加载编辑器节点
         if (!article) {
             editor_html = _template();
@@ -78,7 +79,7 @@ define([
         var jade_interp;;
         var locals_for_with = (locals || {});
         (function(article, undefined) {
-            buf.push("<link rel=\"stylesheet\" href=\"/mkEditor/styles/font-awesome.min.css\"/><div class=\"article-editor\"><h4>文章编辑</h4><div><form class=\"form-group\">");
+            buf.push("<link rel=\"stylesheet\" href=\"/mkEditor/styles/font-awesome.min.css\"/><link rel=\"stylesheet\" href=\"/mkEditor/styles/mkEditor.css\"/><div class=\"article-editor\"><h4>文章编辑</h4><div><form class=\"form-group\">");
             if (article && article.title) {
                 buf.push("<input" + (jade.attrs(jade.merge([{
                     "placeholder": "标题",
@@ -89,7 +90,7 @@ define([
             } else {
                 buf.push("<input placeholder=\"标题\" class=\"form-control article-title\"/>");
             }
-            buf.push("<div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><div class=\"pull-left\"><span>类别: </span></div><div class=\"pull-left dropdown\"><a id=\"dropdown-cat-menu\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\" class=\"btn btn-default btn-xs dropdown-toggle\">默认<span class=\"caret\"></span></a><ul aria-labelledby=\"dropdown-cat-menu\" class=\"dropdown-menu\"><li><a role=\"separator\" class=\"divider\"></a></li><li class=\"cat-add-link\"><a href=\"#\">Add...</a></li></ul></div></div><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\">");
+            buf.push("<div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><div class=\"pull-left\"><span>类别: </span></div><div class=\"pull-left dropdown\"><a id=\"dropdown-cat-menu\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\" idx=\"0\" class=\"btn btn-default btn-xs dropdown-toggle\">" + (jade.escape(null == (jade_interp = article.category) ? "" : jade_interp)) + "<span class=\"caret\"></span></a><ul aria-labelledby=\"dropdown-cat-menu\" class=\"dropdown-menu dropdown-cat-list\"><li class=\"cat-item hide\"><a href=\"#\">默认</a></li><li class=\"cat-add-link\"><a href=\"#\">Add...</a></li></ul></div></div><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\">");
             if (article && article.tags) {
                 // iterate article.tags
                 ;
@@ -122,7 +123,7 @@ define([
             } else {
                 buf.push("<textarea rows=\"20\" placeholder=\"正文，请使用markdown语法编辑\" class=\"form-control article-content\"></textarea>");
             }
-            buf.push("<div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">发布文章</button></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div><div tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" class=\"modal dialog-upload-file\"><div class=\"modal-dialog\"><div class=\"modal-content\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button><h4 class=\"modal-title\">插入图片</h4></div><div class=\"modal-body\"><input type=\"file\" accept=\"image/png,image/gif,image/jpg,image/jpeg\" multiple=\"multiple\" style=\"display:none\" class=\"input-upload-img\"/><div class=\"input-group\"><span class=\"input-group-addon\"><span class=\"fa fa-file-image-o\"></span></span><input type=\"text\" class=\"form-control input-img-links\"/><span class=\"input-group-btn\"><button type=\"button\" onclick=\"$(&quot;input[class=input-upload-img]&quot;).click();\" class=\"btn\">...</button></span></div></div><div class=\"modal-footer\"><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default\">取消</button><button type=\"button\" class=\"btn btn-primary btn-confirm btn-upload-img\">确定</button></div></div></div></div></div></div>");
+            buf.push("<div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">发布文章</button></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-cat-input\"><div class=\"modal-dialog modal-sm\"><div class=\"modal-content\"><div class=\"modal-body\"><input id=\"cat-name\" type=\"text\" class=\"form-control\"/><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default btn-exit\">Cancel</button><button type=\"button\" class=\"btn btn-primary btn-save\">OK</button></div></div></div></div><div tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" class=\"modal dialog-upload-file\"><div class=\"modal-dialog\"><div class=\"modal-content\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button><h4 class=\"modal-title\">插入图片</h4></div><div class=\"modal-body\"><input type=\"file\" accept=\"image/png,image/gif,image/jpg,image/jpeg\" multiple=\"multiple\" style=\"display:none\" class=\"input-upload-img\"/><div class=\"input-group\"><span class=\"input-group-addon\"><span class=\"fa fa-file-image-o\"></span></span><input type=\"text\" class=\"form-control input-img-links\"/><span class=\"input-group-btn\"><button type=\"button\" onclick=\"$(&quot;input[class=input-upload-img]&quot;).click();\" class=\"btn\">...</button></span></div></div><div class=\"modal-footer\"><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default\">取消</button><button type=\"button\" class=\"btn btn-primary btn-confirm btn-upload-img\">确定</button></div></div></div></div></div></div>");
         }.call(this, "article" in locals_for_with ? locals_for_with.article : typeof article !== "undefined" ? article : undefined, "undefined" in locals_for_with ? locals_for_with.undefined : typeof undefined !== "undefined" ? undefined : undefined));;
         return buf.join("");
     }
@@ -221,18 +222,22 @@ define([
             e.preventDefault();
             if ($('.article-tag-list input').length > 0) return;
             var tag_input = $('<input type="text" class="article-tag pull-left"></input>');
-            $('.article-tag-list').prepend(tag_input);
+            $('.article-tag-list').append(tag_input);
             $(tag_input).focus();
         });
 
         // 输入标签转为a
         editor_div.on('keydown', '.article-tag-list input', function(e) {
             if (e.which === 13) {
+                if (!this.value) {
+                    this.remove();
+                    return;
+                }
                 e.preventDefault();
                 var tag_node = $('<a class="article-tag pull-left"></a>');
                 $(tag_node).text(this.value);
                 $('.article-editor .article-tag-list input').remove();
-                $('.article-tag-list').prepend(tag_node);
+                $('.article-tag-list').append(tag_node);
             }
         });
 
@@ -247,6 +252,43 @@ define([
         // 点击标签的删除icon
         editor_div.on('click', '.fa-times', function() {
             $(this).parents('.article-tag').remove();
+        });
+
+        // 新增category item
+        editor_div.on('click', '.cat-add-link a', function() {
+            $('.dialog-cat-input').modal({
+                keyboard: false
+            });
+        });
+        editor_div.on('click', '.dialog-cat-input .btn-save', function() {
+            var cat_name = $('#cat-name').val(), // 输入的类别名称
+                cat_selected, // 下拉框显示框
+                cat_list, // 类别item数组
+                cat_num, // 类别数量
+                cur_idx; // 当前选中的item idx
+            if (!cat_name) {
+                $('.dialog-cat-input .modal-body').append('<span class="msg">输入为空!</span>');
+                return;
+            }
+
+            // 插入新的item并隐藏
+            $('<li class="cat-item hide"><a href="#">' + cat_name + '</a></li>').insertBefore('.cat-add-link');
+            // 显示原先被隐藏的选中item
+            cat_list = $('.dropdown-cat-list').children();
+            cat_selected = $('#dropdown-cat-menu');
+            cat_idx = cat_selected.attr('idx');
+            $(cat_list[cat_idx]).removeClass('hide');
+            cat_num = cat_list.length;
+            $('.dialog-cat-input').modal('hide');
+            cat_selected.html(cat_name + '<span class="caret"></span>').attr('idx', cat_num - 1);
+        });
+        // 输入框隐藏时，移出提示语句
+        $('.dialog-cat-input').on('hidden.bs.modal', function() {
+            var msg = $(this).find('.msg');
+            if (msg) {
+                msg.remove();
+            }
+            $(this).find('#cat-name').val('');
         });
 
         // 点击图片icon 插入图片

@@ -156,6 +156,12 @@ router.post(version + '/article/delete/:id', function(req, res, next) {
 
 });
 
+/* Create a new category */
+router.post(version + '/category/create', function(req, res, next) {
+    model.insertNewCat(article, function(err, json_str) {
+        res.send(json_str);
+    });
+});
 
 /* test */
 router.get(version + '/test', function(req, res, next) {

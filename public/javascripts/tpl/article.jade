@@ -2,27 +2,29 @@
 
 article(class='article')&attributes({'id': 'article-' + article.article_id})
   header(class='article-header')
-    h1(class='article-title')
-      a(href='#') #{article.article_title}
-    div(class='article-meta')
-      span(class='article-author') 作者:
-        a(href='#') #{article.user_name}
-      span  · 
-      span(class='article-created-on') 更新于 
+    h2(class='article-title')
+      a(href='#')= article.article_title
+    div(class='article-meta entry-meta')
+      span(class='glyphicon glyphicon-user article-author')
+        a= article.user_name
+      span(class='article-created-on') 创建于
         a
-          time(class='article-date-created')
-          time(class='updated')&attributes({'datetime': article.article_date_modified}) #{article.article_date_modified}
+          time(class='created')&attributes({'datetime': article.article_date_created})= article.article_date_created
+      span(class='article-updated-on') 更新于 
+        a
+          time(class='updated')&attributes({'datetime': article.article_date_modified})= article.article_date_modified
 
   div(class='article-content')
   div(class='article-permalink')
     a(href='#', class='btn btn-default') 阅读全文
-  footer(class='article-footer')
+  footer(class='article-footer entry-meta')
     span(class='cat-links')
-      a #{article.category_name}
-    div(class='pull-left tag-list')
-      i(class='fa fa-footer clearfix')
-      a(href='#')
+      span(class='glyphicon glyphicon-folder-open')
+        a(href='#')= article.category_name
     span(class='tag-links')
-      a #{article.tags}
-    //- span(class='article-date-modified')
-    //-   a #{article.article_date_modified}
+      span(class='glyphicon glyphicon-tags')
+        a= article.tags
+    span(class='glyphicon glyphicon-edit')
+      a(href='#', class='edit-link') 编辑
+    span(class='glyphicon glyphicon-trash', aria-hidden='true')
+      a(href='#', class='del-link') 删除

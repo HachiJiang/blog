@@ -2,7 +2,7 @@ var mysql = require('mysql');
 var async = require('async');
 var db = require('./db');
 var pool = mysql.createPool(db.setting);
-var unit = 10; // article count in each page
+var unit = 20; // article count in each page
 var map_limit = 10; // map limit count
 var sql_tpl_artciles = 'SELECT tbl_articles.article_id as article_id,article_title,category_name,article_date_created,article_date_modified,user_name,status_name,article_content,article_statistics FROM tbl_articles LEFT JOIN (tbl_categories) ON (tbl_articles.category_id=tbl_categories.category_id) LEFT JOIN (tbl_users) ON (tbl_articles.user_id=tbl_users.user_id) JOIN tbl_status ON (tbl_articles.status_id=tbl_status.status_id)';
 
@@ -246,21 +246,17 @@ exports.saveArticle = function(article, resCalbk) {
                 // 新建
                 sql_0 = "INSERT tbl_articles (article_title, category_id, article_date_created, article_date_modified, user_id, status_id, article_content, article_statistics) VALUES " +
                     "('" + article.article_title + "', '" + category_id + "', " + date_created + ", " + date_modified + ", '" +
-                    user_id + "', '" + article.status_id + "', '" + content + "', '" + article.article_statistics + "')";
+                    user_id + "', '" + article.status_id + "', " + content + ", '" + article.article_statistics + "')";
             } else {
-                // 更新
-                // sql_0 = 'UPDATE tbl_articles SET article_title="' + article.article_title + '", category_id="' + category_id +
-                //     '", article_date_modified=' + date_modified + ', user_id="' + user_id + '", status_id="' + article.status_id +
-                //     '", article_content=' + content + ', article_statistics="' + article.article_statistics + '" WHERE article_id="' + article_id + '"';
                 sql_0 = "UPDATE tbl_articles SET article_title='" + article.article_title + "', category_id='" + category_id +
                     "', article_date_modified=" + date_modified + ", user_id='" + user_id + "', status_id='" + article.status_id +
                     "', article_content=" + content + ", article_statistics='" + article.article_statistics + "' WHERE article_id='" + article_id + "'";
             }
 
             connection.query(sql_0, function(err, results) {
-                article_id = (article_id !== '-1') ? article.article_id : results.insertId;
-                console.log(err);
                 console.log(sql_0);
+                console.log(results);
+                article_id = (article_id !== '-1') ? article.article_id : results.insertId;
                 _errorHandler(err, results, cb1);
                 console.log('save the article as id=' + article_id + ' successfully');
                 cb1(null, article_id);
@@ -387,6 +383,16 @@ exports.saveArticle = function(article, resCalbk) {
 
 // 删除单篇文章
 exports.deleteArticle = function(article, resCalbk) {
+
+};
+
+/**
+ * 保存新的类别
+ * @param  {String} cat_name [description]
+ * @param  {Function} resCalbk [description]
+ * @return null
+ */
+exports.insertNewCat = function(cat_name, resCalbk) {
 
 };
 

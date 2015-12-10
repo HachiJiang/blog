@@ -1,5 +1,6 @@
 //- css文件依赖
 link(rel='stylesheet', href='/mkEditor/styles/font-awesome.min.css')
+link(rel='stylesheet', href='/mkEditor/styles/mkEditor.css')
 //- 编辑器模板
 div(class='article-editor')
   h4 文章编辑
@@ -14,11 +15,11 @@ div(class='article-editor')
           div(class='pull-left')
             span 类别: 
           div(class='pull-left dropdown')
-            a(id='dropdown-cat-menu', href='#', class='btn btn-default btn-xs dropdown-toggle', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') 默认
+            a(id='dropdown-cat-menu', href='#', class='btn btn-default btn-xs dropdown-toggle', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', idx='0')= article.category
               span(class='caret')
-            ul(class='dropdown-menu', aria-labelledby='dropdown-cat-menu')
-              li
-                a(role='separator', class='divider')
+            ul(class='dropdown-menu dropdown-cat-list', aria-labelledby='dropdown-cat-menu')
+              li(class='cat-item hide')
+                a(href='#') 默认
               li(class='cat-add-link')
                 a(href='#') Add...
         btn(class='pull-left btn-tag-add')
@@ -47,6 +48,15 @@ div(class='article-editor')
         div(class='modal-content')
           div(class='modal-body')
             p 预览内容
+
+    //- input dialog
+    div(class='modal dialog-cat-input', tagindex='-1', role='dialog', aria-hidden='true')
+      div(class='modal-dialog modal-sm')
+        div(class='modal-content')
+          div(class='modal-body')
+            input(id='cat-name', type='text', class='form-control')
+            button(type='button', class='btn btn-default btn-exit', data-dismiss='modal') Cancel
+            button(type='button', class='btn btn-primary btn-save') OK
 
     //- 上传文件窗口
     div(class='modal dialog-upload-file', tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')

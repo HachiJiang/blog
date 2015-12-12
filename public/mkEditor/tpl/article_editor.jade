@@ -6,16 +6,13 @@ div(class='article-editor')
   h4 文章编辑
   div
     form(class='form-group')
-      if article && article.title
-        input(class='form-control article-title', placeholder='标题')&attributes({'value': article.title})
-      else
-        input(class='form-control article-title', placeholder='标题')
+      input(class='form-control article-title', placeholder='标题')&attributes({'value': (article && article.title) ? article.title : ''})
       div(class='article-meta-wrap')
         div(class='pull-left article-cat-wrap')
           div(class='pull-left')
             span 类别: 
           div(class='pull-left dropdown')
-            a(id='dropdown-cat-menu', href='#', class='btn btn-default btn-xs dropdown-toggle', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', idx='0')= article.category
+            a(id='dropdown-cat-menu', href='#', class='btn btn-default btn-xs dropdown-toggle', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', idx='0')= (article && article.category) ? article.category : '默认'
               span(class='caret')
             ul(class='dropdown-menu dropdown-cat-list', aria-labelledby='dropdown-cat-menu')
               li(class='cat-item hide')
@@ -34,10 +31,7 @@ div(class='article-editor')
     div(class='article-editor-toolbar', style='clear:both')
       div(class='btn btn-default btn-xs btn-article-pic')
         span(class='fa fa-file-image-o', aria-hidden='true')
-    if article && article.content
-      textarea(rows='20', class='form-control article-content', placeholder='正文，请使用markdown语法编辑')= article.content
-    else
-      textarea(rows='20', class='form-control article-content', placeholder='正文，请使用markdown语法编辑')
+    textarea(rows='20', class='form-control article-content', placeholder='正文，请使用markdown语法编辑')= (article && article.content) ? article.content : ''
     div(class='pull-right')
       button(type='button', class='btn btn-default btn-editor-exit') 退出编辑
       button(type='button', class='btn btn-primary btn-editor-save') 发布文章

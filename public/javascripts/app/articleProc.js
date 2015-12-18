@@ -98,7 +98,7 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
                 "class": "updated"
             }, {
                 'datetime': article.article_date_modified
-            }]), false)) + ">" + (jade.escape(null == (jade_interp = article.article_date_modified) ? "" : jade_interp)) + "</time></a></span></div></header><div class=\"article-content\"></div><div class=\"article-permalink\"><a href=\"#\" class=\"btn btn-default\">阅读全文</a></div><footer class=\"article-footer entry-meta\"><span class=\"cat-links\"><span class=\"glyphicon glyphicon-folder-open\"><a href=\"#\">" + (jade.escape(null == (jade_interp = article.category_name) ? "" : jade_interp)) + "</a></span></span><span class=\"tag-links\"><span class=\"glyphicon glyphicon-tags\"><a>" + (jade.escape(null == (jade_interp = article.tags) ? "" : jade_interp)) + "</a></span></span><span class=\"glyphicon glyphicon-edit\"><a href=\"#\" class=\"edit-link\">编辑</a></span><span aria-hidden=\"true\" class=\"glyphicon glyphicon-trash\"><a href=\"#\" class=\"del-link\">删除</a></span></footer></article>");
+            }]), false)) + ">" + (jade.escape(null == (jade_interp = article.article_date_modified) ? "" : jade_interp)) + "</time></a></span></div></header><div class=\"article-content\">" + (null == (jade_interp = article.article_content) ? "" : jade_interp) + "</div><div class=\"article-permalink\"><a href=\"#\" class=\"btn btn-default\">阅读全文</a></div><footer class=\"article-footer entry-meta\"><span class=\"cat-links\"><span class=\"glyphicon glyphicon-folder-open\"><a href=\"#\">" + (jade.escape(null == (jade_interp = article.category_name) ? "" : jade_interp)) + "</a></span></span><span class=\"tag-links\"><span class=\"glyphicon glyphicon-tags\"><a>" + (jade.escape(null == (jade_interp = article.tags) ? "" : jade_interp)) + "</a></span></span><span class=\"glyphicon glyphicon-edit\"><a href=\"#\" class=\"edit-link\">编辑</a></span><span aria-hidden=\"true\" class=\"glyphicon glyphicon-trash\"><a href=\"#\" class=\"del-link\">删除</a></span></footer></article>");
         }.call(this, "article" in locals_for_with ? locals_for_with.article : typeof article !== "undefined" ? article : undefined));;
         return buf.join("");
     }
@@ -114,11 +114,11 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
             article.article_date_created = _convertDate(article.article_date_created);
         }
         article.article_date_modified = _convertDate(article.article_date_modified);
-        content = mkEditor.parseContent(article.article_content);
+        article.article_content = mkEditor.parseContent(article.article_content);
         articleNd = $(_template({
-            article: article
+            'article': article
         }));
-        articleNd.find('.article-content').html(content);
+        // articleNd.find('.article-content').html(content);
         return articleNd;
     }
 

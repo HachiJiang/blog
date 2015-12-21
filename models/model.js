@@ -6,6 +6,17 @@ var unit = 20; // article count in each page
 var map_limit = 10; // map limit count
 var sql_tpl_artciles = 'SELECT tbl_articles.article_id as article_id,article_title,category_name,article_date_created,article_date_modified,user_name,status_name,article_content_raw,article_content,article_statistics FROM tbl_articles LEFT JOIN (tbl_categories) ON (tbl_articles.category_id=tbl_categories.category_id) LEFT JOIN (tbl_users) ON (tbl_articles.user_id=tbl_users.user_id) JOIN tbl_status ON (tbl_articles.status_id=tbl_status.status_id)';
 
+exports.getArticles = _getArticles;
+exports.getArticlesByCategory = _getArticlesByCategory;
+exports.getArticlesByStatus = _getArticlesByStatus;
+exports.getArticleById = _getArticleById;
+exports.getArticlesByTag = _getArticlesByTag;
+exports.getArticlesByDate = _getArticlesByDate;
+exports.getTags = _getTags;
+exports.getCategories = _getCategories;
+exports.getInfoForHomePage = _getInfoForHomePage;
+exports.saveArticle = _saveArticle;
+exports.deleteArticle = _deleteArticle;
 
 /**
  * Achieve articles by page
@@ -13,7 +24,7 @@ var sql_tpl_artciles = 'SELECT tbl_articles.article_id as article_id,article_tit
  * @param  {Function}   resCalbk       [description]
  * @return null
  */
-exports.getArticles = function(page_idx, resCalbk) {
+function _getArticles(page_idx, resCalbk) {
     var sql = sql_tpl_artciles + _queryOrder() + _queryLimitedByPage(page_idx),
         data = {
             'info': {
@@ -23,7 +34,7 @@ exports.getArticles = function(page_idx, resCalbk) {
         };
     console.log('query: ' + sql);
     _sendArticles(sql, data, resCalbk);
-};
+}
 
 /**
  * Achieve articles by category and page
@@ -32,7 +43,7 @@ exports.getArticles = function(page_idx, resCalbk) {
  * @param  {Function} resCalbk       [description]
  * @return null
  */
-exports.getArticlesByCategory = function(category_id, page_idx, resCalbk) {
+function _getArticlesByCategory(category_id, page_idx, resCalbk) {
     var sql = sql_tpl_artciles + ' WHERE tbl_categories.category_id="' + category_id + '"' + _queryOrder() + _queryLimitedByPage(page_idx),
         data = {
             'info': {
@@ -43,7 +54,7 @@ exports.getArticlesByCategory = function(category_id, page_idx, resCalbk) {
         };
     console.log('sql: ' + sql);
     _sendArticles(sql, data, resCalbk);
-};
+}
 
 /**
  * Achieve articles by status and page
@@ -52,7 +63,7 @@ exports.getArticlesByCategory = function(category_id, page_idx, resCalbk) {
  * @param  {Function} resCalbk  [description]
  * @return null
  */
-exports.getArticlesByStatus = function(status_id, page_idx, resCalbk) {
+function _getArticlesByStatus(status_id, page_idx, resCalbk) {
     var sql = sql_tpl_artciles + ' WHERE tbl_status.status_id="' + status_id + '"' + _queryOrder() + _queryLimitedByPage(page_idx),
         data = {
             'info': {
@@ -63,7 +74,7 @@ exports.getArticlesByStatus = function(status_id, page_idx, resCalbk) {
         };
     console.log('sql: ' + sql);
     _sendArticles(sql, data, resCalbk);
-};
+}
 
 /**
  * Achieve article by id
@@ -71,7 +82,7 @@ exports.getArticlesByStatus = function(status_id, page_idx, resCalbk) {
  * @param  {Function} resCalbk   [description]
  * @return null
  */
-exports.getArticleById = function(article_id, resCalbk) {
+function _getArticleById(article_id, resCalbk) {
     var sql = sql_tpl_artciles + ' WHERE tbl_articles.article_id="' + article_id + '"',
         data = {
             'info': {
@@ -81,7 +92,7 @@ exports.getArticleById = function(article_id, resCalbk) {
         };
     console.log('sql: ' + sql);
     _sendArticles(sql, data, resCalbk);
-};
+}
 
 /**
  * Achieve articles by tag and page
@@ -90,7 +101,7 @@ exports.getArticleById = function(article_id, resCalbk) {
  * @param  {Function} resCalbk [description]
  * @return null
  */
-exports.getArticlesByTag = function(tag_id, page_idx, resCalbk) {
+function _getArticlesByTag(tag_id, page_idx, resCalbk) {
     pool.getConnection(function(err, connection) {
         var getArticleIdsByTagId = function(sql, cb) {
             connection.query(sql, function(err, results) {
@@ -126,7 +137,7 @@ exports.getArticlesByTag = function(tag_id, page_idx, resCalbk) {
             connection.release();
         });
     });
-};
+}
 
 /**
  * Achieve the list of articles in specific year/month
@@ -136,7 +147,7 @@ exports.getArticlesByTag = function(tag_id, page_idx, resCalbk) {
  * @param  {String} resCalbk [description]
  * @return null
  */
-exports.getArticlesByDate = function(year, month, page_idx, resCalbk) {
+function _getArticlesByDate(year, month, page_idx, resCalbk) {
     var sql = sql_tpl_artciles + ' WHERE article_date_created LIKE "' + year + '-' + month + '%"' + _queryOrder() + _queryLimitedByPage(page_idx),
         data = {
             'info': {
@@ -148,35 +159,69 @@ exports.getArticlesByDate = function(year, month, page_idx, resCalbk) {
         };
     console.log('sql: ' + sql);
     _sendArticles(sql, data, resCalbk);
-};
+}
 
 /**
  * Achieve the list of tags
  * @param  {Function} resCalbk [description]
  * @return null
  */
-exports.getTags = function(resCalbk) {
+function _getTags(resCalbk) {
     var sql = 'SELECT * FROM tbl_tags',
         data = {
             'list': []
         };
     console.log('sql: ' + sql);
     _achieveData(sql, data, resCalbk);
-};
+}
 
 /**
  * Achieve the list of categories
  * @param  {Function} resCalbk [description]
  * @return {[type]}            [description]
  */
-exports.getCategories = function(resCalbk) {
+function _getCategories(resCalbk) {
     var sql = 'SELECT * FROM tbl_categories',
         data = {
             'list': []
         };
     console.log('sql: ' + sql);
     _achieveData(sql, data, resCalbk);
-};
+}
+
+/**
+ * Achieve articles, categories, tags for home page
+ * @param  {[type]} page_idx [description]
+ * @param  {[type]} resCalbk [description]
+ * @return {[type]}          [description]
+ */
+/*function _getInfoForHomePage(page_idx, resCalbk) {
+    async.parallel([
+        // get article list
+        function(cb) {
+            _getArticles(page_idx, function(err, json_str) {
+                var article_list = _extractListFromRes(json_str);
+                cb(null, article_list);
+            });
+        },
+        // get category list
+        function(cb) {
+            _getCategories(function(err, json_str) {
+                var category_list = _extractListFromRes(json_str);
+                cb(null, category_list);
+            });
+        },
+        // get tag list
+        function(cb) {
+            _getTags(function(err, json_str) {
+                var tag_list = _extractListFromRes(json_str);
+                cb(null, tag_list);
+            });
+        }
+    ], function(err, results) {
+        resCalbk(err, results);
+    });
+}*/
 
 /**
  * 保存单篇文章
@@ -198,7 +243,7 @@ exports.getCategories = function(resCalbk) {
  * @param  {Funtion} resCalbk [description]
  * @return null
  */
-exports.saveArticle = function(article, resCalbk) {
+function _saveArticle(article, resCalbk) {
     pool.getConnection(function(err, connection) {
         var content_raw = connection.escape(article.article_content_raw),
             content = connection.escape(article.article_content),
@@ -381,23 +426,24 @@ exports.saveArticle = function(article, resCalbk) {
             }));
         });
     });
-};
+}
 
 // 删除单篇文章
-exports.deleteArticle = function(article, resCalbk) {
+function _deleteArticle(id, resCalbk) {
+    console.log(id);
 
-};
+    // delete article from tbl_articles
+    
+    // delete tag records from tbl_article_tag
+}
 
 /**
- * 保存新的类别
- * @param  {String} cat_name [description]
- * @param  {Function} resCalbk [description]
- * @return null
+ * [_errorHandler description]
+ * @param  {[type]} err      [description]
+ * @param  {[type]} results  [description]
+ * @param  {[type]} resCalbk [description]
+ * @return {[type]}          [description]
  */
-exports.insertNewCat = function(cat_name, resCalbk) {
-
-};
-
 function _errorHandler(err, results, resCalbk) {
     if (err) {
         console.log('error connecting' + err.stack);
@@ -509,4 +555,14 @@ function _generateErrorResJson(data) {
         'message': 'Fail to achieve data from database',
         'data': data
     };
+}
+
+/**
+ * Extract
+ * @param  {Object} res [description]
+ * @return {[type]}     [description]
+ */
+function _extractListFromRes(res) {
+    var data = res.data;
+    return ((res.success === true) && (data !== undefined) && (data.list !== undefined)) ? data.list : [];
 }

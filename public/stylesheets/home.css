@@ -1,6 +1,7 @@
 body {
     margin: 0;
     padding: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "WenQuanYi Micro Hei", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
 }
 
 .row {
@@ -48,6 +49,24 @@ body {
 
 .site-content {
     padding: 50px 0;
+}
+.article .article-content,
+.article .article-content .h1,
+.article .article-content .h2,
+.article .article-content .h3,
+.article .article-content .h4,
+.article .article-content .h5,
+.article .article-content .h6,
+.article .article-content h1,
+.article .article-content h2,
+.article .article-content h3,
+.article .article-content h4,
+.article .article-content h5,
+.article .article-content h6,
+#secondary .widget {
+    font-family: "Georgia", "Xin Gothic", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei", sans-serif;
+    font-size: 1.1em;
+    line-height: 1.7em;
 }
 
 .site-content .content-area {
@@ -109,10 +128,10 @@ body {
 }
 
 
-h4, h5, h6 {
+/* h4, h5, h6 {
     margin-top: 1em;
     margin-bottom: 10px;
-}
+} */
 
 /**** Element: a ****/
 
@@ -149,7 +168,6 @@ a {
 
 
 /* article related */
-
 .article {
     margin-bottom: 35px;
     padding: 20px 30px;
@@ -182,7 +200,7 @@ a {
 
 .article .article-content {
     margin: 30px 0;
-    line-height: 1.6em;
+    line-height: 1.8em;
 }
 
 .article .article-footer {

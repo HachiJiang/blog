@@ -4,12 +4,17 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
     exports.renderEditor = mkEditor.render;
     exports.removeEditor = mkEditor.remove;
 
+    exports.displayArticle = _displayArticle;
+    exports.displayArticles = _displayArticles;
+    exports.loadArticleInEditor = _loadArticleInEditor;
+    exports.collectInput = _collectInput;
+
     /**
      * Display single article
      * @param  {Array} list [description]
      * @return null
      */
-    exports.displayArticle = function(list) {
+    function _displayArticle(list) {
         var article = list[0],
             articleNd = _generateArticleHTML(article),
             parent = $('#content-wrap');
@@ -17,14 +22,14 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
         articleNd.find('.article-permalink').remove();
         parent.html('');
         parent.append(articleNd);
-    };
+    }
 
     /**
      * Display multiple articles
      * @param  {Array} list [description]
      * @return {[type]}              [description]
      */
-    exports.displayArticles = function(list) {
+    function _displayArticles(list) {
         var parent = $('#content-wrap'),
             article, articleNd, content, i, il;
 
@@ -39,14 +44,14 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
             articleNd = _generateArticleHTML(article);
             parent.append(articleNd);
         }
-    };
+    }
 
     /**
      * Load single article in editor
      * @param  {[type]} article [description]
      * @return {[type]}         [description]
      */
-    exports.loadArticleInEditor = function(list) {
+    function _loadArticleInEditor(list) {
         var article = list[0],
             tags = article.tags;
         mkEditor.render('content-wrap', {
@@ -56,13 +61,13 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
             'content_raw': article.article_content_raw
         });
         $('.article-editor').attr('id', article.article_id);
-    };
+    }
 
     /**
      * 属性对应不一致，转换
      * @return {[type]} [description]
      */
-    exports.collectInput = function() {
+    function _collectInput() {
         var rawInput = mkEditor.collectInput(),
             date_collected = rawInput.date_collected;
 
@@ -75,7 +80,7 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
             'article_content_raw': rawInput.content_raw,
             'article_content': rawInput.content
         };
-    };
+    }
 
     /**
      * template of single article
@@ -119,7 +124,6 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
         articleNd = $(_template({
             'article': article
         }));
-        // articleNd.find('.article-content').html(content);
         return articleNd;
     }
 

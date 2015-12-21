@@ -45,10 +45,12 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             content_div.on('click', '.article-title a', function() {
                 var id = $(this).parents('article').attr('id').split('-')[1];
                 XHR.getArticleById(id, articleProc.displayArticle);
+                pagi_div.hide();
             });
             content_div.on('click', '.article-permalink a', function() {
                 var id = $(this).parents('article').attr('id').split('-')[1];
                 XHR.getArticleById(id, articleProc.displayArticle);
+                pagi_div.hide();
             });
 
             // 切换至新文章编辑
@@ -62,6 +64,11 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             // 切换至已有文章编辑
             content_div.on('click', '.edit-link', function() {
                 var id = $(this).parents('article').attr('id').split('-')[1];
+                if (!id) {
+                    consolg.log('cannot find id');
+                    return;
+                }
+
                 XHR.getArticleById(id, articleProc.loadArticleInEditor);
                 pagi_div.hide();
             });
@@ -102,6 +109,21 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
                     XHR.getArticlesByPageIdx(page_idx, articleProc.displayArticles);
                     pagi_div.show();
                 }
+            });
+
+            // 删除文章，刷新/回到主页
+            content_div.on('click', '.del-link', function() {
+                var id = $(this).parents('article').attr('id').split('-')[1],
+                    page_idx = 0; // @TO_DO: 获取当前页
+                    
+                if (!id) {
+                    consolg.log('cannot find id');
+                    return;
+                }
+
+                XHR.deleteArticleById(id, articleProc.renderPageByIdx);
+                XHR.getArticlesByPageIdx(page_idx, articleProc.displayArticles);
+                pagi_div.show();
             });
         });
     });

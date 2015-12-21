@@ -7,7 +7,7 @@ var map_limit = 10; // map limit count
 
 /* GET home page */
 router.get('/', function(req, res, next) {
-    res.redirect(version + '/home');
+    res.redirect('/home');
 });
 router.get('/home', function(req, res, next) {
     /*async.parallel([
@@ -155,15 +155,8 @@ router.post(version + '/article/update/:id', function(req, res, next) {
 });
 
 /* Delete an existing article by id */
-router.post(version + '/article/delete/:id', function(req, res, next) {
-
-});
-
-/* Create a new category */
-router.post(version + '/category/create', function(req, res, next) {
-    model.insertNewCat(article, function(err, json_str) {
-        res.send(json_str);
-    });
+router.post(version + '/article/delete', function(req, res, next) {
+    _deleteArticle(req.body.article_id, res);
 });
 
 /* test */
@@ -184,14 +177,4 @@ function _saveArticleToDB(article, res) {
     model.saveArticle(article, function(err, json_str) {
         res.send(json_str);
     });
-}
-
-/**
- * Extract
- * @param  {Object} res [description]
- * @return {[type]}     [description]
- */
-function _extractListFromRes(res) {
-    var data = res.data;
-    return ((res.success === true) && (data !== undefined) && (data.list !== undefined)) ? data.list : [];
 }

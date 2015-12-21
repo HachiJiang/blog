@@ -38,12 +38,12 @@ define(['jquery', 'exports'], function($, exports) {
      * @param  {Function} cb [description]
      * @return null
      */
-    exports.getTags = function(cb) {
+    exports.getTags = function (cb) {
         _getXhrTpl(_version + "/tags", cb);
     };
 
     // POST: 保存/更新单篇文章，并显示正文
-    exports.saveArticle = function(article, cb) {
+    exports.saveArticle = function (article, cb) {
         $.ajax({
             type: "POST",
             url: _version + "/article/create",
@@ -65,6 +65,30 @@ define(['jquery', 'exports'], function($, exports) {
             success: function(res) {
                 if (res.success === true) {
                     //文章保存成功，执行回调函数
+                    article.article_id = res.data.article_id;
+                    cb([article]);
+                } else {
+                    console.log(res.message);
+                }
+            },
+            error: function(jqXHR) {
+                alert("连接失败");
+            }
+        });
+    };
+
+    // POST: 删除单篇文章，并回到首页
+    exports.deleteArticleById = function(article_id, cb) {
+        $.ajax({
+            type: "POST",
+            url: _version + "/article/delete",
+            data: {
+                'article_id': article.article_id
+            },
+            dataType: "json",
+            success: function(res) {
+                if (res.success === true) {
+                    //文章删除成功，执行回调函数
                     article.article_id = res.data.article_id;
                     cb([article]);
                 } else {

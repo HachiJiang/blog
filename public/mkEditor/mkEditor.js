@@ -148,7 +148,6 @@ define([
 
     // 解析用户输入的文章内容为HTML，并用于预览
     function _parseInputToHTML(article) {
-        article.content = mkParser(article.content_raw);
         article.date_collected_HTML = article.date_collected;
         article.titleHTML = "<div><h1 class='article-title'><a href='#'>" + article.title + "</a></h1><div class='article-meta'><span class='author'>类别：<a href='#'>" + article.category + "</a></span> &bull;<time class='article-date' datetime='" + article.date_collected + "' title='" + article.date_collected + "'>" + article.date_collected_HTML + "</time></div></div>";
 

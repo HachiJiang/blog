@@ -7,6 +7,9 @@ var map_limit = 10; // map limit count
 
 /* GET home page */
 router.get('/', function(req, res, next) {
+    res.redirect(version + '/home');
+});
+router.get('/home', function(req, res, next) {
     /*async.parallel([
         // get article list
         function(cb) {

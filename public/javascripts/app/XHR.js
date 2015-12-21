@@ -55,6 +55,7 @@ define(['jquery', 'exports'], function($, exports) {
                 'article_date_modified': article.article_date_modified,
                 'user_name': article.user_name,
                 'status_id': article.status_id,
+                'article_content_raw': article.article_content_raw,
                 'article_content': article.article_content,
                 'article_statistics': article.article_statistics,
                 'tags': article.tags.join(','),
@@ -67,7 +68,7 @@ define(['jquery', 'exports'], function($, exports) {
                     article.article_id = res.data.article_id;
                     cb([article]);
                 } else {
-                    console.log(data.message);
+                    console.log(res.message);
                 }
             },
             error: function(jqXHR) {

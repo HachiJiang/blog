@@ -14,7 +14,8 @@ article(class='article')&attributes({'id': 'article-' + article.article_id})
         a
           time(class='updated')&attributes({'datetime': article.article_date_modified})= article.article_date_modified
 
-  div(class='article-content')= article.article_content
+  div(class='article-content')
+    != article.article_content
   div(class='article-permalink')
     a(href='#', class='btn btn-default') 阅读全文
   footer(class='article-footer entry-meta')

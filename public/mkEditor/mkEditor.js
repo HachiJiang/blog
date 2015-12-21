@@ -18,7 +18,8 @@ define([
      *     category: ,
      *     tags: [],
      *     date_collected: new Date(),
-     *     content: $('.article-content').val()
+     *     content_raw: $('.article-content').val(),
+     *     content: content for display
      * }
      */
     exports.collectInput = function() {
@@ -27,7 +28,7 @@ define([
     };
     exports.render = render;
     exports.remove = remove;
-    exports.parseContent = mkParser;
+    /*exports.parseContent = mkParser;*/
 
     /**
      * Render
@@ -37,7 +38,7 @@ define([
      *     title:
      *     category:
      *     tags: [Array]
-     *     content:
+     *     content_raw:
      * }
      * @return {[type]}         [description]
      */
@@ -111,19 +112,21 @@ define([
                 }).call(this);
 
             }
-            buf.push("</div></div><div class=\"pull-right article-preview\"><btn data-toggle=\"modal\"><a href=\"#\">预览</a></btn></div></form><div style=\"clear:both\" class=\"article-editor-toolbar\"><div class=\"btn btn-default btn-xs btn-article-pic\"><span aria-hidden=\"true\" class=\"fa fa-file-image-o\"></span></div></div><textarea rows=\"20\" placeholder=\"正文，请使用markdown语法编辑\" class=\"form-control article-content\">" + (jade.escape(null == (jade_interp = (article && article.content) ? article.content : '') ? "" : jade_interp)) + "</textarea><div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">发布文章</button></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-cat-input\"><div class=\"modal-dialog modal-sm\"><div class=\"modal-content\"><div class=\"modal-body\"><input id=\"cat-name\" type=\"text\" class=\"form-control\"/><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default btn-exit\">Cancel</button><button type=\"button\" class=\"btn btn-primary btn-save\">OK</button></div></div></div></div><div tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" class=\"modal dialog-upload-file\"><div class=\"modal-dialog\"><div class=\"modal-content\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button><h4 class=\"modal-title\">插入图片</h4></div><div class=\"modal-body\"><input type=\"file\" accept=\"image/png,image/gif,image/jpg,image/jpeg\" multiple=\"multiple\" style=\"display:none\" class=\"input-upload-img\"/><div class=\"input-group\"><span class=\"input-group-addon\"><span class=\"fa fa-file-image-o\"></span></span><input type=\"text\" class=\"form-control input-img-links\"/><span class=\"input-group-btn\"><button type=\"button\" onclick=\"$(&quot;input[class=input-upload-img]&quot;).click();\" class=\"btn\">...</button></span></div></div><div class=\"modal-footer\"><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default\">取消</button><button type=\"button\" class=\"btn btn-primary btn-confirm btn-upload-img\">确定</button></div></div></div></div></div></div>");
+            buf.push("</div></div><div class=\"pull-right article-preview\"><btn data-toggle=\"modal\"><a href=\"#\">预览</a></btn></div></form><div style=\"clear:both\" class=\"article-editor-toolbar\"><div class=\"btn btn-default btn-xs btn-article-pic\"><span aria-hidden=\"true\" class=\"fa fa-file-image-o\"></span></div></div><textarea rows=\"20\" placeholder=\"正文，请使用markdown语法编辑\" class=\"form-control article-content\">" + (jade.escape(null == (jade_interp = (article && article.content_raw) ? article.content_raw : '') ? "" : jade_interp)) + "</textarea><div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">发布文章</button></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-cat-input\"><div class=\"modal-dialog modal-sm\"><div class=\"modal-content\"><div class=\"modal-body\"><input id=\"cat-name\" type=\"text\" class=\"form-control\"/><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default btn-exit\">Cancel</button><button type=\"button\" class=\"btn btn-primary btn-save\">OK</button></div></div></div></div><div tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" class=\"modal dialog-upload-file\"><div class=\"modal-dialog\"><div class=\"modal-content\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button><h4 class=\"modal-title\">插入图片</h4></div><div class=\"modal-body\"><input type=\"file\" accept=\"image/png,image/gif,image/jpg,image/jpeg\" multiple=\"multiple\" style=\"display:none\" class=\"input-upload-img\"/><div class=\"input-group\"><span class=\"input-group-addon\"><span class=\"fa fa-file-image-o\"></span></span><input type=\"text\" class=\"form-control input-img-links\"/><span class=\"input-group-btn\"><button type=\"button\" onclick=\"$(&quot;input[class=input-upload-img]&quot;).click();\" class=\"btn\">...</button></span></div></div><div class=\"modal-footer\"><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default\">取消</button><button type=\"button\" class=\"btn btn-primary btn-confirm btn-upload-img\">确定</button></div></div></div></div></div></div>");
         }.call(this, "article" in locals_for_with ? locals_for_with.article : typeof article !== "undefined" ? article : undefined, "undefined" in locals_for_with ? locals_for_with.undefined : typeof undefined !== "undefined" ? undefined : undefined));;
         return buf.join("");
     }
 
     // 搜集文章编辑页输入的信息
     function _collectInput() {
-        var article = {
-                title: $('.article-title').val(),
-                category: $('#dropdown-cat-menu').text(),
-                tags: [],
-                date_collected: new Date(),
-                content: $('.article-content').val()
+        var content_raw = $('.article-content').val(),
+            article = {
+                'title': $('.article-title').val(),
+                'category': $('#dropdown-cat-menu').text(),
+                'tags': [],
+                'date_collected': new Date(),
+                'content_raw': content_raw,
+                'content': mkParser(content_raw)
             },
             validate_info, tag_nodes, i, il;
 
@@ -143,9 +146,9 @@ define([
         };
     }
 
-    // 解析用户输入的文章内容为HTML
+    // 解析用户输入的文章内容为HTML，并用于预览
     function _parseInputToHTML(article) {
-        article.content = mkParser(article.content);
+        article.content = mkParser(article.content_raw);
         article.date_collected_HTML = article.date_collected;
         article.titleHTML = "<div><h1 class='article-title'><a href='#'>" + article.title + "</a></h1><div class='article-meta'><span class='author'>类别：<a href='#'>" + article.category + "</a></span> &bull;<time class='article-date' datetime='" + article.date_collected + "' title='" + article.date_collected + "'>" + article.date_collected_HTML + "</time></div></div>";
 
@@ -171,7 +174,7 @@ define([
             res.body = "请输入标题";
         }
 
-        if (!article.content) {
+        if (!article.content_raw) {
             res.success = false;
             res.body = "请输入文章内容";
         }

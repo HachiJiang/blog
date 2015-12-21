@@ -53,7 +53,7 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
             'title': article.article_title,
             'category': article.category_name,
             'tags': (tags !== '') ? article.tags.split(',') : [],
-            'content': article.article_content
+            'content_raw': article.article_content_raw
         });
         $('.article-editor').attr('id', article.article_id);
     };
@@ -65,12 +65,14 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
     exports.collectInput = function() {
         var rawInput = mkEditor.collectInput(),
             date_collected = rawInput.date_collected;
+
         date_collected = (!date_collected.Format) ? date_collected : date_collected.Format('YYYY-mm-dd hh:ii:ss');
         return {
             'article_title': rawInput.title,
             'category_name': rawInput.category,
             'tags': rawInput.tags,
             'article_date_modified': date_collected,
+            'article_content_raw': rawInput.content_raw,
             'article_content': rawInput.content
         };
     };
@@ -114,7 +116,6 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
             article.article_date_created = _convertDate(article.article_date_created);
         }
         article.article_date_modified = _convertDate(article.article_date_modified);
-        article.article_content = mkEditor.parseContent(article.article_content);
         articleNd = $(_template({
             'article': article
         }));

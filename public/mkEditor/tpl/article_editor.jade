@@ -31,7 +31,7 @@ div(class='article-editor')
     div(class='article-editor-toolbar', style='clear:both')
       div(class='btn btn-default btn-xs btn-article-pic')
         span(class='fa fa-file-image-o', aria-hidden='true')
-    textarea(rows='20', class='form-control article-content', placeholder='正文，请使用markdown语法编辑')= (article && article.content) ? article.content : ''
+    textarea(rows='20', class='form-control article-content', placeholder='正文，请使用markdown语法编辑')= (article && article.content_raw) ? article.content_raw : ''
     div(class='pull-right')
       button(type='button', class='btn btn-default btn-editor-exit') 退出编辑
       button(type='button', class='btn btn-primary btn-editor-save') 发布文章

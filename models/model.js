@@ -14,7 +14,6 @@ exports.getArticlesByTag = _getArticlesByTag;
 exports.getArticlesByDate = _getArticlesByDate;
 exports.getTags = _getTags;
 exports.getCategories = _getCategories;
-exports.getInfoForHomePage = _getInfoForHomePage;
 exports.saveArticle = _saveArticle;
 exports.deleteArticle = _deleteArticle;
 
@@ -188,40 +187,6 @@ function _getCategories(resCalbk) {
     console.log('sql: ' + sql);
     _achieveData(sql, data, resCalbk);
 }
-
-/**
- * Achieve articles, categories, tags for home page
- * @param  {[type]} page_idx [description]
- * @param  {[type]} resCalbk [description]
- * @return {[type]}          [description]
- */
-/*function _getInfoForHomePage(page_idx, resCalbk) {
-    async.parallel([
-        // get article list
-        function(cb) {
-            _getArticles(page_idx, function(err, json_str) {
-                var article_list = _extractListFromRes(json_str);
-                cb(null, article_list);
-            });
-        },
-        // get category list
-        function(cb) {
-            _getCategories(function(err, json_str) {
-                var category_list = _extractListFromRes(json_str);
-                cb(null, category_list);
-            });
-        },
-        // get tag list
-        function(cb) {
-            _getTags(function(err, json_str) {
-                var tag_list = _extractListFromRes(json_str);
-                cb(null, tag_list);
-            });
-        }
-    ], function(err, results) {
-        resCalbk(err, results);
-    });
-}*/
 
 /**
  * 保存单篇文章
@@ -555,14 +520,4 @@ function _generateErrorResJson(data) {
         'message': 'Fail to achieve data from database',
         'data': data
     };
-}
-
-/**
- * Extract
- * @param  {Object} res [description]
- * @return {[type]}     [description]
- */
-function _extractListFromRes(res) {
-    var data = res.data;
-    return ((res.success === true) && (data !== undefined) && (data.list !== undefined)) ? data.list : [];
 }

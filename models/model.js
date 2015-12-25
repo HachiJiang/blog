@@ -195,7 +195,7 @@ function _getCategories(resCalbk) {
  * @param  {[type]} resCalbk [description]
  * @return {[type]}          [description]
  */
-/*function _getInfoForHomePage(page_idx, resCalbk) {
+function _getInfoForHomePage(page_idx, resCalbk) {
     async.parallel([
         // get article list
         function(cb) {
@@ -221,7 +221,7 @@ function _getCategories(resCalbk) {
     ], function(err, results) {
         resCalbk(err, results);
     });
-}*/
+}
 
 /**
  * 保存单篇文章

@@ -2,6 +2,7 @@ var express = require('express');
 var async = require('async');
 var router = express.Router();
 var model = require('../models/model');
+var date = require('../models/date');
 var version = '/v1';
 var map_limit = 10; // map limit count
 
@@ -10,30 +11,8 @@ router.get('/', function(req, res, next) {
     res.redirect('/home');
 });
 router.get('/home', function(req, res, next) {
-    /*async.parallel([
-        // get article list
-        function(cb) {
-            var page_idx = '0';
-            model.getArticles(page_idx, function(err, json_str) {
-                var article_list = _extractListFromRes(json_str);
-                cb(null, article_list);
-            });
-        },
-        // get category list
-        function(cb) {
-            model.getCategories(function(err, json_str) {
-                var category_list = _extractListFromRes(json_str);
-                cb(null, category_list);
-            });
-        },
-        // get tag list
-        function(cb) {
-            model.getTags(function(err, json_str) {
-                var tag_list = _extractListFromRes(json_str);
-                cb(null, tag_list);
-            });
-        }
-    ], function(err, results) {
+    var page_idx = 0;
+    model.getInfoForHomePage(page_idx, function(err, results) {
         res.render('index', {
             'title': 'SWORDARCHOR',
             'connStr': '-',
@@ -42,14 +21,9 @@ router.get('/home', function(req, res, next) {
             'widgetsInfo': {
                 'cat_list': results[1],
                 'tag_list': results[2]
-            }
+            },
+            'format': date.format
         });
-    });*/
-
-    res.render('index', {
-        'title': 'SWORDARCHOR',
-        'connStr': '-',
-        'desc': '和冬瓜一起努力'
     });
 });
 

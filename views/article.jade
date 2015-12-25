@@ -9,10 +9,10 @@ article(class='article')&attributes({'id': 'article-' + article.article_id})
         a= article.user_name
       span(class='article-created-on') 创建于
         a
-          time(class='created')&attributes({'datetime': article.article_date_created})= article.article_date_created
+          time(class='created')&attributes({'datetime': article.article_date_created})= format(article.article_date_created)
       span(class='article-updated-on') 更新于 
         a
-          time(class='updated')&attributes({'datetime': article.article_date_modified})= article.article_date_modified
+          time(class='updated')&attributes({'datetime': article.article_date_modified})= format(article.article_date_modified)
 
   div(class='article-content')
     != article.article_content

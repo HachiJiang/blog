@@ -56,9 +56,9 @@ section(id='content' class='site-content')
                 a(href='#', aria-label='Next')
                   span(aria-hidden='true') &raquo;
       div(id='secondary', class='col-md-3 sidebar widget-area')
-        //- if widgetsInfo
-        //-   - var widgets = widgetsInfo
-        include ./widgets.jade
+        if widgetsInfo
+          - var widgets = widgetsInfo
+          include ./widgets.jade
 
 //- site footer
 footer(class='site-footer')

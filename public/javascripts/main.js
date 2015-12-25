@@ -26,12 +26,6 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
                 sec_div = $('#secondary'),
                 pagi_div = $('#content-pagination');
 
-            /* Render articles */
-            XHR.getArticlesByPageIdx(0, articleProc.displayArticles);
-            /* Render sidebars */
-            XHR.getCategories(widgetProc.displayCategories);
-            XHR.getTags(widgetProc.displayTags);
-
             /* Add event listeners */
             // 用户登录事件
             $('#login-submit').on('click', function() {

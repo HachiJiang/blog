@@ -78,19 +78,18 @@ define(['jquery', 'exports'], function($, exports) {
     };
 
     // POST: 删除单篇文章，并回到首页
-    exports.deleteArticleById = function(article_id, cb) {
+    exports.deleteArticleById = function(article_id) {
         $.ajax({
             type: "POST",
             url: _version + "/article/delete",
             data: {
-                'article_id': article.article_id
+                'article_id': article_id
             },
             dataType: "json",
             success: function(res) {
                 if (res.success === true) {
                     //文章删除成功，执行回调函数
-                    article.article_id = res.data.article_id;
-                    cb([article]);
+                    console.log(res.message);
                 } else {
                     console.log(res.message);
                 }

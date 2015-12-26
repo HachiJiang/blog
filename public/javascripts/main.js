@@ -24,7 +24,8 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
         $(function() {
             var content_div = $('#content-wrap'),
                 sec_div = $('#secondary'),
-                pagi_div = $('#content-pagination');
+                pagi_div = $('#content-pagination'),
+                dialog_del = $('#isDel');
 
             /* Render articles */
             XHR.getArticlesByPageIdx(0, articleProc.displayArticles);
@@ -112,17 +113,23 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             });
 
             // 删除文章，刷新/回到主页
-            content_div.on('click', '.del-link', function() {
-                var id = $(this).parents('article').attr('id').split('-')[1],
-                    page_idx = 0; // @TO_DO: 获取当前页
+            content_div.on('click', '.del-link', function(e) {
+                e.preventDefault();
+                var id = $(this).parents('article').attr('id').split('-')[1];
                     
                 if (!id) {
                     consolg.log('cannot find id');
                     return;
                 }
 
-                XHR.deleteArticleById(id, articleProc.renderPageByIdx);
+                dialog_del.modal();
+                dialog_del.find('#del-submit').attr('target', id);
+            });
+            dialog_del.on('click', '#del-submit', function() {
+                var page_idx = 0; // @TO_DO: 获取当前页
+                XHR.deleteArticleById($(this).attr('target'));
                 XHR.getArticlesByPageIdx(page_idx, articleProc.displayArticles);
+                dialog_del.modal('hide');
                 pagi_div.show();
             });
         });

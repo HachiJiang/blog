@@ -393,13 +393,47 @@ function _saveArticle(article, resCalbk) {
     });
 }
 
-// 删除单篇文章
-function _deleteArticle(id, resCalbk) {
-    console.log(id);
+// 删除已有tag对应关系
+function _deleteFromTblArticleTag(connection, info, cb) {
+    var article_id = info.article_id,
+        sql_0 = 'DELETE FROM tbl_article_tag WHERE article_id="' + article_id + '"';
 
-    // delete article from tbl_articles
-    
-    // delete tag records from tbl_article_tag
+    connection.query(sql_0, function(err, results) {
+        _errorHandler(err, results, cb);
+        cb(null, info);
+    });
+}
+
+// delete article from tbl_articles
+function _deleteFromTblArticles(connection, article_id, cb) {
+    var sql_0 = 'DELETE FROM tbl_articles WHERE article_id="' + article_id + '"';
+
+    connection.query(sql_0, function(err, results) {
+        _errorHandler(err, results, cb);
+        cb(null, article_id);
+    });
+}
+
+// 删除单篇文章
+function _deleteArticle(article_id, resCalbk) {
+    pool.getConnection(function(err, connection) {
+        async.parallel([
+            // delete tag records from tbl_article_tag
+            function(cb) {
+                _deleteFromTblArticles(connection, article_id, cb);
+            },
+            // delete article from tbl_articles
+            function(cb) {
+                _deleteFromTblArticleTag(connection, {
+                    'article_id': article_id
+                }, cb);
+            }
+        ], function(err, results) {
+            _errorHandler(err, results, resCalbk);
+            connection.release();
+            resCalbk(null, _generateSuccessResJson());
+        });
+    });
 }
 
 /**

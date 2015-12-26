@@ -120,12 +120,7 @@ router.post(version + '/article/update/:id', function(req, res, next) {
 
 /* Delete an existing article by id */
 router.post(version + '/article/delete', function(req, res, next) {
-    _deleteArticle(req.body.article_id, res);
-});
-
-/* test */
-router.get(version + '/test', function(req, res, next) {
-    model.test(function(err, json_str) {
+    model.deleteArticle(req.body.article_id, function(err, json_str) {
         res.send(json_str);
     });
 });

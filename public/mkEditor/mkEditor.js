@@ -70,7 +70,7 @@ define([
         // 1. 解除事件绑定
 
         // 2. 从页面移除editor节点
-        $('#' + id + ' .article-editor').remove();
+        $('#' + id + ' .mk-editor').remove();
     }
 
     // 获取markdown编辑器模板
@@ -79,13 +79,50 @@ define([
         var jade_mixins = {};
         var jade_interp;;
         var locals_for_with = (locals || {});
-        (function(article, undefined) {
-            buf.push("<link rel=\"stylesheet\" href=\"/mkEditor/styles/font-awesome.min.css\"/><link rel=\"stylesheet\" href=\"/mkEditor/styles/mkEditor.css\"/><div class=\"article-editor\"><h4>文章编辑</h4><div><form class=\"form-group\"><input" + (jade.attrs(jade.merge([{
+        (function(article, undefined, 默认) {
+            buf.push("<link rel=\"stylesheet\" href=\"/mkEditor/styles/font-awesome.min.css\"/><link rel=\"stylesheet\" href=\"/mkEditor/styles/mkEditor.css\"/><div class=\"mk-editor\"><h4>文章编辑</h4><div><form class=\"form-group\"><input" + (jade.attrs(jade.merge([{
                 "placeholder": "标题",
                 "class": "form-control article-title"
             }, {
                 'value': (article && article.title) ? article.title : ''
-            }]), false)) + "/><div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><div class=\"pull-left\"><span>类别: </span></div><div class=\"pull-left dropdown\"><a id=\"dropdown-cat-menu\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\" idx=\"0\" class=\"btn btn-default btn-xs dropdown-toggle\">" + (jade.escape(null == (jade_interp = (article && article.category) ? article.category : '默认') ? "" : jade_interp)) + "<span class=\"caret\"></span></a><ul aria-labelledby=\"dropdown-cat-menu\" class=\"dropdown-menu dropdown-cat-list\"><li class=\"cat-item hide\"><a href=\"#\">默认</a></li><li class=\"cat-add-link\"><a href=\"#\">Add...</a></li></ul></div></div><btn class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></btn><div class=\"pull-left article-tag-list\">");
+            }]), false)) + "/><div class=\"article-meta-wrap\"><div class=\"pull-left article-cat-wrap\"><div class=\"pull-left\"><span>类别: </span></div><div class=\"pull-left dropdown\"><a id=\"dropdown-cat-menu\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\" idx=\"0\" class=\"btn btn-default btn-xs dropdown-toggle\">" + (jade.escape(null == (jade_interp = (article && article.category) ? article.category : '默认') ? "" : jade_interp)) + "<span class=\"caret\"></span></a><ul aria-labelledby=\"dropdown-cat-menu\" class=\"dropdown-menu dropdown-cat-list\">");
+            if (article && article.cat_list) {
+                // iterate article.cat_list
+                ;
+                (function() {
+                    var $$obj = article.cat_list;
+                    if ('number' == typeof $$obj.length) {
+
+                        for (var $index = 0, $$l = $$obj.length; $index < $$l; $index++) {
+                            var cat = $$obj[$index];
+
+                            if (cat !== article.category) {
+                                buf.push("<li class=\"cat-item\"><a href=\"#\">" + (jade.escape(null == (jade_interp = cat) ? "" : jade_interp)) + "</a></li>");
+                            } else {
+                                buf.push("<li class=\"cat-item hide\"><a href=\"#\">" + (jade.escape(null == (jade_interp = cat) ? "" : jade_interp)) + "</a></li>");
+                            }
+                        }
+
+                    } else {
+                        var $$l = 0;
+                        for (var $index in $$obj) {
+                            $$l++;
+                            var cat = $$obj[$index];
+
+                            if (cat !== article.category) {
+                                buf.push("<li class=\"cat-item\"><a href=\"#\">" + (jade.escape(null == (jade_interp = cat) ? "" : jade_interp)) + "</a></li>");
+                            } else {
+                                buf.push("<li class=\"cat-item hide\"><a href=\"#\">" + (jade.escape(null == (jade_interp = cat) ? "" : jade_interp)) + "</a></li>");
+                            }
+                        }
+
+                    }
+                }).call(this);
+
+            } else {
+                buf.push("<li class=\"cat-item hide\"><a href=\"#\">" + (jade.escape(null == (jade_interp = 默认) ? "" : jade_interp)) + "</a></li>");
+            }
+            buf.push("<li class=\"cat-add-link\"><a href=\"#\">Add...</a></li></ul></div></div><div class=\"pull-left btn-tag-add\"><a href=\"#\">添加标签</a></div><div class=\"pull-left article-tag-list\">");
             if (article && article.tags) {
                 // iterate article.tags
                 ;
@@ -113,7 +150,7 @@ define([
 
             }
             buf.push("</div></div><div class=\"pull-right article-preview\"><btn data-toggle=\"modal\"><a href=\"#\">预览</a></btn></div></form><div style=\"clear:both\" class=\"article-editor-toolbar\"><div class=\"btn btn-default btn-xs btn-article-pic\"><span aria-hidden=\"true\" class=\"fa fa-file-image-o\"></span></div></div><textarea rows=\"20\" placeholder=\"正文，请使用markdown语法编辑\" class=\"form-control article-content\">" + (jade.escape(null == (jade_interp = (article && article.content_raw) ? article.content_raw : '') ? "" : jade_interp)) + "</textarea><div class=\"pull-right\"><button type=\"button\" class=\"btn btn-default btn-editor-exit\">退出编辑</button><button type=\"button\" class=\"btn btn-primary btn-editor-save\">发布文章</button></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-article-preview\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-body\"><p>预览内容</p></div></div></div></div><div tagindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" class=\"modal dialog-cat-input\"><div class=\"modal-dialog modal-sm\"><div class=\"modal-content\"><div class=\"modal-body\"><input id=\"cat-name\" type=\"text\" class=\"form-control\"/><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default btn-exit\">Cancel</button><button type=\"button\" class=\"btn btn-primary btn-save\">OK</button></div></div></div></div><div tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\" class=\"modal dialog-upload-file\"><div class=\"modal-dialog\"><div class=\"modal-content\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button><h4 class=\"modal-title\">插入图片</h4></div><div class=\"modal-body\"><input type=\"file\" accept=\"image/png,image/gif,image/jpg,image/jpeg\" multiple=\"multiple\" style=\"display:none\" class=\"input-upload-img\"/><div class=\"input-group\"><span class=\"input-group-addon\"><span class=\"fa fa-file-image-o\"></span></span><input type=\"text\" class=\"form-control input-img-links\"/><span class=\"input-group-btn\"><button type=\"button\" onclick=\"$(&quot;input[class=input-upload-img]&quot;).click();\" class=\"btn\">...</button></span></div></div><div class=\"modal-footer\"><button type=\"button\" data-dismiss=\"modal\" class=\"btn btn-default\">取消</button><button type=\"button\" class=\"btn btn-primary btn-confirm btn-upload-img\">确定</button></div></div></div></div></div></div>");
-        }.call(this, "article" in locals_for_with ? locals_for_with.article : typeof article !== "undefined" ? article : undefined, "undefined" in locals_for_with ? locals_for_with.undefined : typeof undefined !== "undefined" ? undefined : undefined));;
+        }.call(this, "article" in locals_for_with ? locals_for_with.article : typeof article !== "undefined" ? article : undefined, "undefined" in locals_for_with ? locals_for_with.undefined : typeof undefined !== "undefined" ? undefined : undefined, "默认" in locals_for_with ? locals_for_with.默认 : typeof 默认 !== "undefined" ? 默认 : undefined));;
         return buf.join("");
     }
 
@@ -188,7 +225,7 @@ define([
 
     // 绑定事件
     function _attachEventListeners() {
-        var editor_div = $('.article-editor'),
+        var editor_div = $('.mk-editor'),
             dialog_upload_div = $('.dialog-upload-file');
 
         // 预览文章，弹出模态框
@@ -203,9 +240,6 @@ define([
             dialog_preview.find('.modal-body').html(preview_html);
             dialog_preview.modal();
         });
-
-        // 类别选择
-        $('#dropdown-cat-menu').dropdown();
 
         // 点击 添加标签
         editor_div.on('click', '.btn-tag-add a', function(e) {
@@ -226,7 +260,7 @@ define([
                 e.preventDefault();
                 var tag_node = $('<a class="article-tag pull-left"></a>');
                 $(tag_node).text(this.value);
-                $('.article-editor .article-tag-list input').remove();
+                editor_div.find('.article-tag-list input').remove();
                 $('.article-tag-list').append(tag_node);
             }
         });
@@ -244,6 +278,21 @@ define([
             $(this).parents('.article-tag').remove();
         });
 
+        // 类别选择
+        $('#dropdown-cat-menu').dropdown();
+
+        // 切换类别
+        editor_div.on('click', '.cat-item', function() {
+            var cat_name = $(this).find('a').text(),
+                cat_selected = $('.dropdown-cat-list').find('.cat-item.hide');
+
+            $(this).addClass('hide');
+            $('#dropdown-cat-menu').html(cat_name + '<span class="caret"></span>');
+            // 将原选中item重新显示在下拉菜单中
+            $.each(cat_selected, function(i, cat) {
+                $(cat).removeClass('hide');
+            });
+        });
         // 新增category item
         editor_div.on('click', '.cat-add-link a', function() {
             $('.dialog-cat-input').modal({
@@ -252,25 +301,23 @@ define([
         });
         editor_div.on('click', '.dialog-cat-input .btn-save', function() {
             var cat_name = $('#cat-name').val(), // 输入的类别名称
-                cat_selected, // 下拉框显示框
-                cat_list, // 类别item数组
-                cat_num, // 类别数量
-                cur_idx; // 当前选中的item idx
+                cat_selected; // 选中cat在下拉菜单中的item
             if (!cat_name) {
                 $('.dialog-cat-input .modal-body').append('<span class="msg">输入为空!</span>');
                 return;
             }
 
+            // 将原选中item重新显示在下拉菜单中
+            cat_selected = $('.dropdown-cat-list').find('.cat-item.hide');
+            $.each(cat_selected, function(i, cat) {
+                $(cat).removeClass('hide');
+            });
+
             // 插入新的item并隐藏
             $('<li class="cat-item hide"><a href="#">' + cat_name + '</a></li>').insertBefore('.cat-add-link');
-            // 显示原先被隐藏的选中item
-            cat_list = $('.dropdown-cat-list').children();
-            cat_selected = $('#dropdown-cat-menu');
-            cat_idx = cat_selected.attr('idx');
-            $(cat_list[cat_idx]).removeClass('hide');
-            cat_num = cat_list.length;
+            // 显示新增item于显示框
+            $('#dropdown-cat-menu').html(cat_name + '<span class="caret"></span>');
             $('.dialog-cat-input').modal('hide');
-            cat_selected.html(cat_name + '<span class="caret"></span>').attr('idx', cat_num - 1);
         });
         // 输入框显示时，focus输入框
         $('.dialog-cat-input').on('shown.bs.modal', function() {

@@ -1,0 +1,10 @@
+.mk-editor .article-meta-wrap {
+    margin: 3px 0;
+    padding: 2px 0;
+}
+.mk-editor .article-meta-wrap > div {
+    margin-right: 10px;
+}
+.mk-editor .article-tag-list a {
+    padding-right: 5px;
+}

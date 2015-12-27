@@ -53,14 +53,21 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
      */
     function _loadArticleInEditor(list) {
         var article = list[0],
-            tags = article.tags;
+            tags = article.tags,
+            cat_ndlist = $('#widget-cat-list').find('a'),
+            cat_list = [];
+
+        $.each(cat_ndlist, function(i, item) {
+            cat_list.push($(item).text());
+        });
         mkEditor.render('content-wrap', {
             'title': article.article_title,
             'category': article.category_name,
+            'cat_list': cat_list,
             'tags': (tags !== '') ? article.tags.split(',') : [],
             'content_raw': article.article_content_raw
         });
-        $('.article-editor').attr('id', article.article_id);
+        $('.mk-editor').attr('id', article.article_id);
     }
 
     /**

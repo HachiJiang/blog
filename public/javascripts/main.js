@@ -58,7 +58,7 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             // @TO_DO: Needs login
             $('#secondary').on('click', '#btn-article-create', function() {
                 articleProc.renderEditor('content-wrap');
-                $('#primary .article-editor').attr('id', '-1');
+                $('#primary .mk-editor').attr('id', '-1');
                 pagi_div.hide();
             });
 
@@ -80,7 +80,7 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
                 if (article === {}) return;
 
                 // 获取文章id
-                article.article_id = $('#primary .article-editor').attr('id');
+                article.article_id = $('#primary .mk-editor').attr('id');
                 // 更新时间
                 if (article.article_id === '-1') {
                     article.article_date_created = article.article_date_modified;
@@ -98,9 +98,9 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             });
 
             // 退出编辑
-            content_div.on('click', '.article-editor .btn-editor-exit', function() {
+            content_div.on('click', '.mk-editor .btn-editor-exit', function() {
                 // 获取文章id
-                var id = $('#primary .article-editor').attr('id'),
+                var id = $('#primary .mk-editor').attr('id'),
                     page_idx;
                 if (id !== '-1') {
                     XHR.getArticleById(id, articleProc.displayArticle);
@@ -128,6 +128,7 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             dialog_del.on('click', '#del-submit', function() {
                 var page_idx = 0; // @TO_DO: 获取当前页
                 XHR.deleteArticleById($(this).attr('target'));
+                $(this).removeAttr('target');
                 XHR.getArticlesByPageIdx(page_idx, articleProc.displayArticles);
                 dialog_del.modal('hide');
                 pagi_div.show();

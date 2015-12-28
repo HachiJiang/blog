@@ -8,3 +8,12 @@
 .mk-editor .article-tag-list a {
     padding-right: 5px;
 }
+
+.mk-editor .article-editor-toolbar {
+	clear: both;
+}
+
+.mk-editor .btn-editor-exit,
+.mk-editor .btn-editor-save {
+	margin: 8px 0px 8px 3px;
+}

@@ -34,12 +34,13 @@ div(class='mk-editor')
           if article && article.tags
             each tag in article.tags
               a(class='article-tag pull-left')= tag
+      
+    div(class='article-editor-toolbar')
+      div(class='pull-left btn btn-default btn-xs btn-article-pic')
+        span(class='fa fa-file-image-o', aria-hidden='true')
       div(class='pull-right article-preview')
         btn(data-toggle='modal')
           a(href='#') 预览
-    div(class='article-editor-toolbar', style='clear:both')
-      div(class='btn btn-default btn-xs btn-article-pic')
-        span(class='fa fa-file-image-o', aria-hidden='true')
     textarea(rows='20', class='form-control article-content', placeholder='正文，请使用markdown语法编辑')= (article && article.content_raw) ? article.content_raw : ''
     div(class='pull-right')
       button(type='button', class='btn btn-default btn-editor-exit') 退出编辑

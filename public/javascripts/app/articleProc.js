@@ -1,7 +1,6 @@
 /* 文章相关操作 */
 
 define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, jade, exports) {
-    exports.renderEditor = mkEditor.render;
     exports.removeEditor = mkEditor.remove;
 
     exports.displayArticle = _displayArticle;
@@ -48,25 +47,31 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
 
     /**
      * Load single article in editor
-     * @param  {[type]} article [description]
+     * @param  {Array} list:  article list
      * @return {[type]}         [description]
      */
     function _loadArticleInEditor(list) {
-        var article = list[0],
-            tags = article.tags,
+        var article = {},
+            tags = article.tags || [],
             cat_ndlist = $('#widget-cat-list').find('a'),
-            cat_list = [];
+            cat_list = [],
+            params = {};
 
         $.each(cat_ndlist, function(i, item) {
             cat_list.push($(item).text());
         });
-        mkEditor.render('content-wrap', {
-            'title': article.article_title,
-            'category': article.category_name,
-            'cat_list': cat_list,
-            'tags': (tags !== '') ? article.tags.split(',') : [],
-            'content_raw': article.article_content_raw
-        });
+
+        params.cat_list = cat_list;
+
+        if (!!list && (list instanceof Object)) {
+            article = list[0];
+            params.title = article.article_title;
+            params.category = article.article_title;
+            params.tags = (article.tags !== '') ? article.tags.split(',') : [];
+            params.content_raw = article.article_content_raw;
+        }
+
+        mkEditor.render('content-wrap', params);
         $('.mk-editor').attr('id', article.article_id);
     }
 
@@ -112,7 +117,7 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
                 "class": "updated"
             }, {
                 'datetime': article.article_date_modified
-            }]), false)) + ">" + (jade.escape(null == (jade_interp = article.article_date_modified) ? "" : jade_interp)) + "</time></a></span></div></header><div class=\"article-content\">" + (null == (jade_interp = article.article_content) ? "" : jade_interp) + "</div><div class=\"article-permalink\"><a href=\"#\" class=\"btn btn-default\">阅读全文</a></div><footer class=\"article-footer entry-meta\"><span class=\"cat-links\"><span class=\"glyphicon glyphicon-folder-open\"><a href=\"#\">" + (jade.escape(null == (jade_interp = article.category_name) ? "" : jade_interp)) + "</a></span></span><span class=\"tag-links\"><span class=\"glyphicon glyphicon-tags\"><a>" + (jade.escape(null == (jade_interp = article.tags) ? "" : jade_interp)) + "</a></span></span><span class=\"glyphicon glyphicon-edit\"><a href=\"#\" class=\"edit-link\">编辑</a></span><span aria-hidden=\"true\" class=\"glyphicon glyphicon-trash\"><a href=\"#\" class=\"del-link\">删除</a></span></footer></article>");
+            }]), false)) + ">" + (jade.escape(null == (jade_interp = article.article_date_modified) ? "" : jade_interp)) + "</time></a></span></div></header><div class=\"article-content\">" + (null == (jade_interp = article.article_content) ? "" : jade_interp) + "</div><div class=\"article-permalink\"><a href=\"#\" class=\"btn btn-default\">阅读全文</a></div><footer class=\"article-footer entry-meta\"><span class=\"cat-links\"><span class=\"glyphicon glyphicon-folder-open\"><a href=\"#\">" + (jade.escape(null == (jade_interp = article.category_name) ? "" : jade_interp)) + "</a></span></span><span class=\"tag-links\"><span class=\"glyphicon glyphicon-tags\"><a>" + (jade.escape(null == (jade_interp = article.tags) ? "" : jade_interp)) + "</a></span></span><span class=\"glyphicon glyphicon-edit\"><a href=\"#edit\" class=\"edit-link\">编辑</a></span><span aria-hidden=\"true\" class=\"glyphicon glyphicon-trash\"><a href=\"#\" class=\"del-link\">删除</a></span></footer></article>");
         }.call(this, "article" in locals_for_with ? locals_for_with.article : typeof article !== "undefined" ? article : undefined));;
         return buf.join("");
     }

@@ -57,7 +57,7 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             // 切换至新文章编辑
             // @TO_DO: Needs login
             $('#secondary').on('click', '#btn-article-create', function() {
-                articleProc.renderEditor('content-wrap');
+                articleProc.loadArticleInEditor();
                 $('#primary .mk-editor').attr('id', '-1');
                 pagi_div.hide();
             });

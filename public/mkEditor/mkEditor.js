@@ -47,7 +47,7 @@ define([
             editor_html;
 
         if (!id || !parent) {
-            console.log('invalid param for render method');
+            console.log('invalid params for render method');
             return;
         }
 

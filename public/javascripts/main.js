@@ -1,4 +1,6 @@
-/* configuration */
+/**
+ *  configuration
+ */
 requirejs.config({
     baseUrl: '/',
     paths: {
@@ -8,7 +10,8 @@ requirejs.config({
         'runtime': 'javascripts/lib/runtime',
         'articleProc': 'javascripts/app/articleProc',
         'widgetProc': 'javascripts/app/widgetProc',
-        'XHR': 'javascripts/app/XHR'
+        'XHR': 'javascripts/app/XHR',
+        'PagiWidget': 'javascripts/components/PagiWidget'
     },
     shim: {
         'bootstrap': {
@@ -20,8 +23,11 @@ requirejs.config({
 
 /* entry */
 require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
-    require(['articleProc', 'widgetProc', 'XHR'], function(articleProc, widgetProc, XHR) {
+    require(['articleProc', 'widgetProc', 'XHR', 'PagiWidget'], function(articleProc, widgetProc, XHR, PagiWidget) {
         $(function() {
+
+            var pagi = new PagiWidget();
+
             var content_div = $('#content-wrap'),
                 sec_div = $('#secondary'),
                 pagi_div = $('#content-pagination'),

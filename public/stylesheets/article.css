@@ -1,0 +1,63 @@
+/* article related */
+
+.article .article-content,
+.article .article-content .h1,
+.article .article-content .h2,
+.article .article-content .h3,
+.article .article-content .h4,
+.article .article-content .h5,
+.article .article-content .h6,
+.article .article-content h1,
+.article .article-content h2,
+.article .article-content h3,
+.article .article-content h4,
+.article .article-content h5,
+.article .article-content h6 {
+    font-family: "Georgia", "Xin Gothic", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei", sans-serif;
+    font-size: 1.1em;
+    line-height: 1.7em;
+}
+
+.article {
+    margin-bottom: 35px;
+    padding: 20px 30px;
+    /*border: 1px solid #e1e1e1;*/
+}
+
+.article .article-head {
+    margin: 0;
+}
+
+.article a:hover {
+    text-decoration: none;
+}
+
+.article-title a {
+    color: #323e4e;
+}
+
+.article .article-permalink {
+    text-align: right;
+}
+
+.article .article-content {
+    margin: 30px 0;
+    line-height: 1.8em;
+}
+
+.article .article-footer {
+    margin-top: 20px;
+    padding: 20px 0 0;
+    border-top: 1px solid #ebebeb;
+    text-align: right;
+}
+
+.article-content pre {
+    padding: 0;
+    border: none;
+    line-height: 1.6em;
+}
+
+.article pre code {
+    padding: 15px;
+}

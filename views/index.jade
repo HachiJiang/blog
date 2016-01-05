@@ -1,10 +1,11 @@
 //- entry page of home
 
-extends ./includes/layout
+extends ./include/layout
 
 block links
   link(rel='stylesheet', href='/stylesheets/highlights/monokai_sublime.css')
   link(rel='stylesheet', href='/stylesheets/home.css')
+  link(rel='stylesheet', href='/stylesheets/article.css')
 block content
   //- body content of home page
   //- site-top
@@ -50,22 +51,11 @@ block content
             if article_list
               for articleObj in article_list
                 - var article = articleObj
-                 include ./includes/article.jade
-          div(id='content-pagination')
-            nav
-              ul(class='pagination')
-                li(class='disabled')
-                  a(href='#', aria-label='Previous')
-                    span(aria-hidden='true') &laquo;
-                li(class='active')
-                  a(href='#') 1
-                li(class='disabled')
-                  a(href='#', aria-label='Next')
-                    span(aria-hidden='true') &raquo;
+                 include ./include/article.jade
         div(id='secondary', class='col-md-3 sidebar widget-area')
           //- if widgetsInfo
           //-   - var widgets = widgetsInfo
-          include ./includes/widgets.jade
+          include ./include/widgets.jade
 
   //- site footer
   footer(class='site-footer')

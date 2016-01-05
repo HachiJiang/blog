@@ -1,0 +1,14 @@
+div(class='content-pagination')
+  nav
+    if (pageNum > 0)
+      ul(class='pagination')
+        li(class='disabled')
+          a(href='#', aria-label='Previous')
+            span(aria-hidden='true') &laquo;
+        - var i = 1
+        while i <= pageNum
+          li()
+            a(href='#')= i++
+        li(class='disabled')
+          a(href='#', aria-label='Next')
+            span(aria-hidden='true') &raquo;

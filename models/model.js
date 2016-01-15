@@ -7,10 +7,10 @@ var map_limit = 10; // map limit count
 var sql_tpl_artciles = 'SELECT tbl_articles.article_id as article_id,article_title,category_name,article_date_created,article_date_modified,user_name,status_name,article_content_raw,article_content,article_statistics FROM tbl_articles LEFT JOIN (tbl_categories) ON (tbl_articles.category_id=tbl_categories.category_id) LEFT JOIN (tbl_users) ON (tbl_articles.user_id=tbl_users.user_id) JOIN tbl_status ON (tbl_articles.status_id=tbl_status.status_id)';
 
 exports.getArticles = _getArticles;
-exports.getArticlesByCategory = _getArticlesByCategory;
+exports.getArticlesByCatId = _getArticlesByCatId;
 exports.getArticlesByStatus = _getArticlesByStatus;
 exports.getArticleById = _getArticleById;
-exports.getArticlesByTag = _getArticlesByTag;
+exports.getArticlesByTagId = _getArticlesByTagId;
 exports.getArticlesByDate = _getArticlesByDate;
 exports.getTags = _getTags;
 exports.getCategories = _getCategories;
@@ -42,7 +42,7 @@ function _getArticles(page_idx, resCalbk) {
  * @param  {Function} resCalbk       [description]
  * @return null
  */
-function _getArticlesByCategory(category_id, page_idx, resCalbk) {
+function _getArticlesByCatId(category_id, page_idx, resCalbk) {
     var sql = sql_tpl_artciles + ' WHERE tbl_categories.category_id="' + category_id + '"' + _queryOrder() + _queryLimitedByPage(page_idx),
         data = {
             'info': {
@@ -100,7 +100,7 @@ function _getArticleById(article_id, resCalbk) {
  * @param  {Function} resCalbk [description]
  * @return null
  */
-function _getArticlesByTag(tag_id, page_idx, resCalbk) {
+function _getArticlesByTagId(tag_id, page_idx, resCalbk) {
     pool.getConnection(function(err, connection) {
         var getArticleIdsByTagId = function(sql, cb) {
             connection.query(sql, function(err, results) {

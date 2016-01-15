@@ -33,7 +33,7 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
             article, articleNd, content, i, il;
 
         if (list === undefined || list.length === undefined || list.length < 1) {
-            $('#primary').html('博主未发布任何文章...');
+            parent.html('sorry...博主没有您想要的文章...');
             return;
         }
 
@@ -66,7 +66,7 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
         if (!!list && (list instanceof Object)) {
             article = list[0];
             params.title = article.article_title;
-            params.category = article.article_title;
+            params.category = article.category_name;
             params.tags = (article.tags !== '') ? article.tags.split(',') : [];
             params.content_raw = article.article_content_raw;
         }
@@ -95,31 +95,16 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
     }
 
     /**
-     * template of single article
+     * template of single article - article.js
      * @param  {Object} locals [description]
      * @return {String}        html
      */
     function _template(locals) {
         var buf = [];
         var jade_mixins = {};
-        var jade_interp;;
-        var locals_for_with = (locals || {});
-        (function(article) {
-            buf.push("<article" + (jade.attrs(jade.merge([{
-                "class": "article"
-            }, {
-                'id': 'article-' + article.article_id
-            }]), false)) + "><header class=\"article-header\"><h2 class=\"article-title\"><a href=\"#\">" + (jade.escape(null == (jade_interp = article.article_title) ? "" : jade_interp)) + "</a></h2><div class=\"article-meta entry-meta\"><span class=\"glyphicon glyphicon-user article-author\"><a>" + (jade.escape(null == (jade_interp = article.user_name) ? "" : jade_interp)) + "</a></span><span class=\"article-created-on\">创建于<a><time" + (jade.attrs(jade.merge([{
-                "class": "created"
-            }, {
-                'datetime': article.article_date_created
-            }]), false)) + ">" + (jade.escape(null == (jade_interp = article.article_date_created) ? "" : jade_interp)) + "</time></a></span><span class=\"article-updated-on\">更新于 <a><time" + (jade.attrs(jade.merge([{
-                "class": "updated"
-            }, {
-                'datetime': article.article_date_modified
-            }]), false)) + ">" + (jade.escape(null == (jade_interp = article.article_date_modified) ? "" : jade_interp)) + "</time></a></span></div></header><div class=\"article-content\">" + (null == (jade_interp = article.article_content) ? "" : jade_interp) + "</div><div class=\"article-permalink\"><a href=\"#\" class=\"btn btn-default\">阅读全文</a></div><footer class=\"article-footer entry-meta\"><span class=\"cat-links\"><span class=\"glyphicon glyphicon-folder-open\"><a href=\"#\">" + (jade.escape(null == (jade_interp = article.category_name) ? "" : jade_interp)) + "</a></span></span><span class=\"tag-links\"><span class=\"glyphicon glyphicon-tags\"><a>" + (jade.escape(null == (jade_interp = article.tags) ? "" : jade_interp)) + "</a></span></span><span class=\"glyphicon glyphicon-edit\"><a href=\"#edit\" class=\"edit-link\">编辑</a></span><span aria-hidden=\"true\" class=\"glyphicon glyphicon-trash\"><a href=\"#\" class=\"del-link\">删除</a></span></footer></article>");
-        }.call(this, "article" in locals_for_with ? locals_for_with.article : typeof article !== "undefined" ? article : undefined));;
-        return buf.join("");
+        var jade_interp;
+        ;var locals_for_with = (locals || {});(function (article) {
+            buf.push("<article" + (jade.attrs(jade.merge([{"class": "article"},{'id': 'article-' + article.article_id}]), false)) + "><header class=\"article-header\"><h2 class=\"article-title\"><a href=\"#\">" + (jade.escape(null == (jade_interp = article.article_title) ? "" : jade_interp)) + "</a></h2><div class=\"article-meta entry-meta\"><span class=\"glyphicon glyphicon-user article-author\"><a>" + (jade.escape(null == (jade_interp = article.user_name) ? "" : jade_interp)) + "</a></span><span class=\"article-created-on\">创建于<a><time" + (jade.attrs(jade.merge([{"class": "created"},{'datetime': article.article_date_created}]), false)) + ">" + (jade.escape(null == (jade_interp = article.article_date_created) ? "" : jade_interp)) + "</time></a></span><span class=\"article-updated-on\">更新于 <a><time" + (jade.attrs(jade.merge([{"class": "updated"},{'datetime': article.article_date_modified}]), false)) + ">" + (jade.escape(null == (jade_interp = article.article_date_modified) ? "" : jade_interp)) + "</time></a></span></div></header><div class=\"article-content\">" + (null == (jade_interp = article.article_content) ? "" : jade_interp) + "</div><div class=\"article-permalink\"><a href=\"#\" class=\"btn btn-default\">阅读全文</a></div><footer class=\"article-footer entry-meta\"><span class=\"cat-links\"><span class=\"glyphicon glyphicon-folder-open\"><a href=\"#\">" + (jade.escape(null == (jade_interp = article.category_name) ? "" : jade_interp)) + "</a></span></span><span class=\"tag-links\"><span class=\"glyphicon glyphicon-tags\"><a>" + (jade.escape(null == (jade_interp = article.tags) ? "" : jade_interp)) + "</a></span></span><span class=\"glyphicon glyphicon-edit\"><a href=\"#\" class=\"edit-link\">编辑</a></span><span aria-hidden=\"true\" class=\"glyphicon glyphicon-trash\"><a href=\"#\" class=\"del-link\">删除</a></span></footer></article>");}.call(this,"article" in locals_for_with?locals_for_with.article:typeof article!=="undefined"?article:undefined));;return buf.join("");
     }
 
     /**
@@ -164,11 +149,14 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
             "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
             "S": this.getMilliseconds() //毫秒 
         };
-        if (/(Y+)/.test(fmt))
+        if (/(Y+)/.test(fmt)) {
             fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-        for (var k in o)
-            if (new RegExp("(" + k + ")").test(fmt))
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) {
                 fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            }
+        }
         return fmt;
     };
 });

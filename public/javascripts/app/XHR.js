@@ -25,6 +25,26 @@ define(['jquery', 'exports'], function($, exports) {
     };
 
     /**
+     * GET: 获取某tag文章的某页
+     * @param tad_id
+     * @param page_idx
+     * @param cb
+     */
+    exports.getArticlesByTagId = function(tad_id, page_idx, cb) {
+        _getXhrTpl(_version + "/articles/tag/" + tad_id + "/page/" + page_idx, cb);
+    };
+
+    /**
+     * GET: 获取某类别文章的某页
+     * @param cat_id
+     * @param page_idx
+     * @param cb
+     */
+    exports.getArticlesByCatId = function(cat_id, page_idx, cb) {
+        _getXhrTpl(_version + "/articles/category/" + cat_id + "/page/" + page_idx, cb);
+    };
+
+    /**
      * GET: category list
      * @param  {Function} cb [description]
      * @return {[type]}      [description]

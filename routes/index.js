@@ -1,3 +1,5 @@
+/* router */
+
 var express = require('express');
 var async = require('async');
 var router = express.Router();
@@ -45,7 +47,7 @@ router.get(version + '/articles/category/:category_id/page/:page_idx', function(
         category_id = params.category_id;
 
     console.log(req.params);
-    model.getArticlesByCategory(category_id, page_idx, function(err, json_str) {
+    model.getArticlesByCatId(category_id, page_idx, function(err, json_str) {
         res.send(json_str);
     });
 });
@@ -77,7 +79,7 @@ router.get(version + '/articles/tag/:tag_id/page/:page_idx', function(req, res, 
         page_idx = params.page_idx,
         tag_id = params.tag_id;
 
-    model.getArticlesByTag(tag_id, page_idx, function(err, json_str) {
+    model.getArticlesByTagId(tag_id, page_idx, function(err, json_str) {
         res.send(json_str);
     });
 });

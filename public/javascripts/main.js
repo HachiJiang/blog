@@ -24,6 +24,7 @@ requirejs.config({
 /* entry */
 require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
     require(['articleProc', 'widgetProc', 'XHR', 'PagiWidget'], function(articleProc, widgetProc, XHR, PagiWidget) {
+
         $(function() {
 
             var pagi = new PagiWidget();
@@ -32,6 +33,8 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
                 sec_div = $('#secondary'),
                 pagi_div = $('#content-pagination'),
                 dialog_del = $('#isDel');
+
+            var cat_id_cur, tag_id_cur, page_idx_cur;
 
             /* Render articles */
             XHR.getArticlesByPageIdx(0, articleProc.displayArticles);
@@ -60,9 +63,36 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
                 pagi_div.hide();
             });
 
+            // tag filter
+            sec_div.on('click', '.tag-item', function() {
+                if ($(this).hasClass('active')) {
+                    return;
+                }
+
+                var tag_id = widgetProc.extractId($(this).attr('id')),
+                    page_idx = 0;
+
+                XHR.getArticlesByTagId(tag_id, page_idx, articleProc.displayArticles);
+                widgetProc.updateFilterNd(this);
+            });
+
+            // cat filter
+            sec_div.on('click', '.cat-item', function() {
+                if ($(this).hasClass('active')) {
+                    return;
+                }
+
+                var cat_id = widgetProc.extractId($(this).attr('id')),
+                    page_idx = 0;
+
+                XHR.getArticlesByCatId(cat_id, page_idx, articleProc.displayArticles);
+                widgetProc.updateFilterNd(this);
+            });
+
+            /* 编辑权限部分 */
             // 切换至新文章编辑
             // @TO_DO: Needs login
-            $('#secondary').on('click', '#btn-article-create', function() {
+            sec_div.on('click', '#btn-article-create', function() {
                 articleProc.loadArticleInEditor();
                 $('#primary .mk-editor').attr('id', '-1');
                 pagi_div.hide();
@@ -121,24 +151,37 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             // 删除文章，刷新/回到主页
             content_div.on('click', '.del-link', function(e) {
                 e.preventDefault();
-                var id = $(this).parents('article').attr('id').split('-')[1];
-                    
+                var id = $(this).parents('article').attr('id').split('-')[1],
+                    data;
+
                 if (!id) {
-                    consolg.log('cannot find id');
+                    console.log('cannot find id');
                     return;
                 }
 
                 dialog_del.modal();
                 dialog_del.find('#del-submit').attr('target', id);
+                data = {
+                    id : id,
+                    congtent_div: content_div
+                };
+                $('#del-submit').on('click', data, function(evt) {
+                    var page_idx = 0, // @TO_DO: 获取当前页
+                        data = evt.data,
+                        articleNd = data.congtent_div.find('#article-' + data.id);
+
+                    XHR.deleteArticleById($(this).attr('target'));
+                    $(this).removeAttr('target');
+                    XHR.getArticlesByPageIdx(page_idx, articleProc.displayArticles);
+                    if (articleNd) {
+                        articleNd.remove();
+                    }
+                    dialog_del.modal('hide');
+                    pagi_div.show();
+                    $(this).off('click');
+                });
             });
-            dialog_del.on('click', '#del-submit', function() {
-                var page_idx = 0; // @TO_DO: 获取当前页
-                XHR.deleteArticleById($(this).attr('target'));
-                $(this).removeAttr('target');
-                XHR.getArticlesByPageIdx(page_idx, articleProc.displayArticles);
-                dialog_del.modal('hide');
-                pagi_div.show();
-            });
+
         });
     });
 });

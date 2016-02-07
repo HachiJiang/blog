@@ -226,7 +226,8 @@ define([
     // 绑定事件
     function _attachEventListeners() {
         var editor_div = $('.mk-editor'),
-            dialog_upload_div = $('.dialog-upload-file');
+            dialog_upload_div = $('.dialog-upload-file'),
+            dialog_cat_input = $('.dialog-cat-input');
 
         // 预览文章，弹出模态框
         editor_div.on('click', '.article-preview', function() {
@@ -320,11 +321,11 @@ define([
             $('.dialog-cat-input').modal('hide');
         });
         // 输入框显示时，focus输入框
-        $('.dialog-cat-input').on('shown.bs.modal', function() {
+        dialog_cat_input.on('shown.bs.modal', function() {
             $('#cat-name').focus();
         });
         // 输入框隐藏时，移除提示语句
-        $('.dialog-cat-input').on('hidden.bs.modal', function() {
+        dialog_cat_input.on('hidden.bs.modal', function() {
             var msg = $(this).find('.msg');
             if (msg) {
                 msg.remove();
@@ -377,5 +378,6 @@ define([
             contentnode.val(content);
             $('.dialog-upload-file').modal('hide');
         });
+
     }
 });

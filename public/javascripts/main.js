@@ -102,7 +102,7 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             content_div.on('click', '.edit-link', function() {
                 var id = $(this).parents('article').attr('id').split('-')[1];
                 if (!id) {
-                    consolg.log('cannot find id');
+                    console.log('cannot find id');
                     return;
                 }
 
@@ -111,32 +111,12 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             });
 
             // 发布文章，页面跳转显示正文全文
-            content_div.on('click', '.btn-editor-save', function() {
-                var article = articleProc.collectInput();
-                if (article === {}) return;
-
-                // 获取文章id
-                article.article_id = $('#primary .mk-editor').attr('id');
-                // 更新时间
-                if (article.article_id === '-1') {
-                    article.article_date_created = article.article_date_modified;
-                }
-                // @TO_DO: 获取当前username
-                article.user_name = 'swordarchor';
-                // 添加已发布文章的flag
-                article.status_id = '2';
-                // 初始化comments
-                article.comments = '';
-                // @TO_DO: 初始化统计信息
-                article.article_statistics = '';
-
-                XHR.saveArticle(article, articleProc.displayArticle);
-            });
+            content_div.on('click', '.btn-editor-save', submitArticle);
 
             // 退出编辑
             content_div.on('click', '.mk-editor .btn-editor-exit', function() {
                 // 获取文章id
-                var id = $('#primary .mk-editor').attr('id'),
+                var id = $('.mk-editor').attr('id'),
                     page_idx;
                 if (id !== '-1') {
                     XHR.getArticleById(id, articleProc.displayArticle);
@@ -182,6 +162,38 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
                 });
             });
 
+            // 文章编辑框捕获键盘快捷键
+            content_div.on('keypress', 'textarea', function(evt) {
+                // [ctrl+s] 保存文章
+                if (evt.ctrlKey && evt.which === "83") {
+                    submitArticle();
+                }
+            });
+
+            // submit article info
+            function submitArticle() {
+                var article = articleProc.collectInput();
+                if (article === {}) {
+                    return;
+                }
+
+                // 获取文章id
+                article.article_id = $('.mk-editor').attr('id');
+                // 更新时间
+                if (article.article_id === '-1') {
+                    article.article_date_created = article.article_date_modified;
+                }
+                // @TO_DO: 获取当前username
+                article.user_name = 'swordarchor';
+                // 添加已发布文章的flag
+                article.status_id = '2';
+                // 初始化comments
+                article.comments = '';
+                // @TO_DO: 初始化统计信息
+                article.article_statistics = '';
+
+                XHR.saveArticle(article, articleProc.displayArticle);
+            }
         });
     });
 });

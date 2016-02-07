@@ -122,13 +122,14 @@ function _getArticlesByTagId(tag_id, page_idx, resCalbk) {
                         'page_idx': page_idx
                     },
                     'list': []
-                };
+                },
+                i, il;
 
             if (articleIdArr.length !== 0) {
-                for (var i = 0, il = articleIdArr.length; i < il; i++) {
+                for (i = 0, il = articleIdArr.length; i < il; i++) {
                     idArr.push(articleIdArr[i].article_id);
                 }
-                sql += idArr.join(',') + ')';
+                sql += idArr.join(',') + ')' + _queryOrder();
                 _sendArticles(sql, data, resCalbk);
             } else {
                 resCalbk(err, _generateSuccessResJson(data));
@@ -521,7 +522,7 @@ function _sendArticles(sql, data, resCalbk) {
  * Generate query with order by date_created
  * @return {[type]} [description]
  */
-function _queryOrder(col) {
+function _queryOrder() {
     return ' ORDER BY article_date_created DESC';
 }
 

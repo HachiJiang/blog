@@ -62,6 +62,28 @@ define(['jquery', 'exports'], function($, exports) {
         _getXhrTpl(_version + "/tags", cb);
     };
 
+    /**
+     * 获取文章总页数
+     */
+    exports.getPageCount = function getPageCount(cb) {
+        $.ajax({
+            type: "GET",
+            url: _version + "/article/getPageCount",
+            dataType: "json",
+            success: function(res) {
+                if (res.success === true) {
+                    // 成功获取页数，执行回调函数
+                    cb(pageCountTotal);
+                } else {
+                    console.log(res.message);
+                }
+            },
+            error: function() {
+                alert("连接失败");
+            }
+        });
+    };
+
     // POST: 保存/更新单篇文章，并显示正文
     exports.saveArticle = function (article, cb) {
         $.ajax({
@@ -137,7 +159,6 @@ define(['jquery', 'exports'], function($, exports) {
                     cb(res.data.list);
                 } else {
                     console.log(data.message);
-                    return;
                 }
             },
             error: function(jqXHR) {

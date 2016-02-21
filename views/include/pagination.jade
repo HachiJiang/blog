@@ -7,7 +7,10 @@ div(class='content-pagination')
             span(aria-hidden='true') &laquo;
         - var i = 1
         while i <= pageNum
-          li()
+          if (i !== curPageIdx)
+            li()
+          else
+            li(class='active')
             a(href='#')= i++
         li(class='disabled')
           a(href='#', aria-label='Next')

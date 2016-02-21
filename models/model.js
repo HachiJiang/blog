@@ -6,16 +6,17 @@ var unit = 10; // article count in each page
 var map_limit = 10; // map limit count
 var sql_tpl_artciles = 'SELECT tbl_articles.article_id as article_id,article_title,category_name,article_date_created,article_date_modified,user_name,status_name,article_content_raw,article_content,article_statistics FROM tbl_articles LEFT JOIN (tbl_categories) ON (tbl_articles.category_id=tbl_categories.category_id) LEFT JOIN (tbl_users) ON (tbl_articles.user_id=tbl_users.user_id) JOIN tbl_status ON (tbl_articles.status_id=tbl_status.status_id)';
 
-exports.getArticles = _getArticles;
-exports.getArticlesByCatId = _getArticlesByCatId;
+exports.getArticles = getArticles;
+exports.getArticlesByCatId = getArticlesByCatId;
 exports.getArticlesByStatus = _getArticlesByStatus;
-exports.getArticleById = _getArticleById;
-exports.getArticlesByTagId = _getArticlesByTagId;
+exports.getArticleById = getArticleById;
+exports.getArticlesByTagId = getArticlesByTagId;
 exports.getArticlesByDate = _getArticlesByDate;
-exports.getTags = _getTags;
-exports.getCategories = _getCategories;
-exports.saveArticle = _saveArticle;
-exports.deleteArticle = _deleteArticle;
+exports.getPageCount = getPageCount;
+exports.getTags = getTags;
+exports.getCategories = getCategories;
+exports.saveArticle = saveArticle;
+exports.deleteArticle = deleteArticle;
 
 /**
  * Achieve articles by page
@@ -23,7 +24,7 @@ exports.deleteArticle = _deleteArticle;
  * @param  {Function}   resCalbk       [description]
  * @return null
  */
-function _getArticles(page_idx, resCalbk) {
+function getArticles(page_idx, resCalbk) {
     var sql = sql_tpl_artciles + _queryOrder() + _queryLimitedByPage(page_idx),
         data = {
             'info': {
@@ -42,7 +43,7 @@ function _getArticles(page_idx, resCalbk) {
  * @param  {Function} resCalbk       [description]
  * @return null
  */
-function _getArticlesByCatId(category_id, page_idx, resCalbk) {
+function getArticlesByCatId(category_id, page_idx, resCalbk) {
     var sql = sql_tpl_artciles + ' WHERE tbl_categories.category_id="' + category_id + '"' + _queryOrder() + _queryLimitedByPage(page_idx),
         data = {
             'info': {
@@ -81,7 +82,7 @@ function _getArticlesByStatus(status_id, page_idx, resCalbk) {
  * @param  {Function} resCalbk   [description]
  * @return null
  */
-function _getArticleById(article_id, resCalbk) {
+function getArticleById(article_id, resCalbk) {
     var sql = sql_tpl_artciles + ' WHERE tbl_articles.article_id="' + article_id + '"',
         data = {
             'info': {
@@ -100,7 +101,7 @@ function _getArticleById(article_id, resCalbk) {
  * @param  {Function} resCalbk [description]
  * @return null
  */
-function _getArticlesByTagId(tag_id, page_idx, resCalbk) {
+function getArticlesByTagId(tag_id, page_idx, resCalbk) {
     pool.getConnection(function(err, connection) {
         var getArticleIdsByTagId = function(sql, cb) {
             connection.query(sql, function(err, results) {
@@ -162,11 +163,20 @@ function _getArticlesByDate(year, month, page_idx, resCalbk) {
 }
 
 /**
+ * Achieve ths total page count
+ * @param  {Function} resCalbk [description]
+ * @private
+ */
+function getPageCount(resCalbk) {
+
+}
+
+/**
  * Achieve the list of tags
  * @param  {Function} resCalbk [description]
  * @return null
  */
-function _getTags(resCalbk) {
+function getTags(resCalbk) {
     var sql = 'SELECT * FROM tbl_tags',
         data = {
             'list': []
@@ -180,7 +190,7 @@ function _getTags(resCalbk) {
  * @param  {Function} resCalbk [description]
  * @return {[type]}            [description]
  */
-function _getCategories(resCalbk) {
+function getCategories(resCalbk) {
     var sql = 'SELECT * FROM tbl_categories',
         data = {
             'list': []
@@ -209,7 +219,7 @@ function _getCategories(resCalbk) {
  * @param  {Funtion} resCalbk [description]
  * @return null
  */
-function _saveArticle(article, resCalbk) {
+function saveArticle(article, resCalbk) {
     pool.getConnection(function(err, connection) {
         var content_raw = connection.escape(article.article_content_raw),
             content = connection.escape(article.article_content),
@@ -416,7 +426,7 @@ function _deleteFromTblArticles(connection, article_id, cb) {
 }
 
 // 删除单篇文章
-function _deleteArticle(article_id, resCalbk) {
+function deleteArticle(article_id, resCalbk) {
     pool.getConnection(function(err, connection) {
         async.parallel([
             // delete tag records from tbl_article_tag

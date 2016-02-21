@@ -3,6 +3,36 @@
  */
 
 define(['jquery', 'runtime'], function(jquery, jade) {
+
+    var PagiWidget = function PagiWidget(pageNum, curPageIdx) {
+        if (this instanceof PagiWidget) {
+            this.pageNum = pageNum || 0;
+            this.curPageIdx = curPageIdx || 1;
+            this._nd = $(_template({
+                'pageNum': pageNum,
+                'curPageIdx': curPageIdx
+            }));
+        } else {
+            return new PagiWidget();
+        }
+    };
+
+    PagiWidget.prototype = {
+        show: function() {
+            this._nd.style.display = 'block';
+        },
+
+        setCurPage: function(curPageIdx) {
+            var _nd = this._nd;
+            _nd.find('li.active').removeClass('active');
+            _nd.find('li:nth-child(' + curPageIdx + ')').addClass('active');
+        },
+
+        hide: function() {
+            this._nd.style.display = 'none';
+        }
+    };
+
     /**
      * Template of pagination widget
      * @param locals
@@ -27,19 +57,6 @@ define(['jquery', 'runtime'], function(jquery, jade) {
             }
             buf.push("</nav></div>");}.call(this,"pageNum" in locals_for_with?locals_for_with.pageNum:typeof pageNum!=="undefined"?pageNum:undefined));;return buf.join("");
     }
-
-    var PagiWidget = function PagiWidget(pageNum, curPageIdx) {
-        if (this instanceof PagiWidget) {
-            this.pageNum = pageNum || 0;
-            this.curPageIdx = curPageIdx || 1;
-            this.nd = $(_template({
-                'pageNum': pageNum,
-                'curPageIdx': curPageIdx
-            }));
-        } else {
-            return new PagiWidget();
-        }
-    };
 
     return PagiWidget;
 });

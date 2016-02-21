@@ -2,7 +2,6 @@
 
 define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, jade, exports) {
     exports.removeEditor = mkEditor.remove;
-
     exports.displayArticle = _displayArticle;
     exports.displayArticles = _displayArticles;
     exports.loadArticleInEditor = _loadArticleInEditor;

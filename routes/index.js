@@ -96,15 +96,22 @@ router.get(version + '/articles/year/:year/month/:month/page/:page_idx', functio
     });
 });
 
+/* GET page total count */
+router.get(version + '/article/getPageCount', function(req, res) {
+    model.getPageCount(function(err, json_str) {
+        res.send(json_str);
+    });
+});
+
 /* GET tag list */
-router.get(version + '/tags', function(req, res, next) {
+router.get(version + '/tags', function(req, res) {
     model.getTags(function(err, json_str) {
         res.send(json_str);
     });
 });
 
 /* GET category list */
-router.get(version + '/categories', function(req, res, next) {
+router.get(version + '/categories', function(req, res) {
     model.getCategories(function(err, json_str) {
         res.send(json_str);
     });

@@ -27,17 +27,16 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
 
         $(function() {
 
-            var pagi = new PagiWidget();
-
             var content_div = $('#content-wrap'),
                 sec_div = $('#secondary'),
-                pagi_div = $('#content-pagination'),
+                pagiWidget = new PagiWidget(),
                 dialog_del = $('#isDel');
 
             var cat_id_cur, tag_id_cur, page_idx_cur;
 
             /* Render articles */
             XHR.getArticlesByPageIdx(0, articleProc.displayArticles);
+            XHR.getPageCount(pagiWidget);
             /* Render sidebars */
             XHR.getCategories(widgetProc.displayCategories);
             XHR.getTags(widgetProc.displayTags);
@@ -55,12 +54,12 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             content_div.on('click', '.article-title a', function() {
                 var id = $(this).parents('article').attr('id').split('-')[1];
                 XHR.getArticleById(id, articleProc.displayArticle);
-                pagi_div.hide();
+                pagiWidget.hide();
             });
             content_div.on('click', '.article-permalink a', function() {
                 var id = $(this).parents('article').attr('id').split('-')[1];
                 XHR.getArticleById(id, articleProc.displayArticle);
-                pagi_div.hide();
+                pagiWidget.hide();
             });
 
             // tag filter
@@ -95,7 +94,7 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
             sec_div.on('click', '#btn-article-create', function() {
                 articleProc.loadArticleInEditor();
                 $('#primary .mk-editor').attr('id', '-1');
-                pagi_div.hide();
+                pagiWidget.hide();
             });
 
             // 切换至已有文章编辑
@@ -107,7 +106,7 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
                 }
 
                 XHR.getArticleById(id, articleProc.loadArticleInEditor);
-                pagi_div.hide();
+                pagiWidget.hide();
             });
 
             // 发布文章，页面跳转显示正文全文
@@ -120,11 +119,11 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
                     page_idx;
                 if (id !== '-1') {
                     XHR.getArticleById(id, articleProc.displayArticle);
-                    pagi_div.hide();
+                    pagiWidget.hide();
                 } else {
                     page_idx = 0; // @TO_DO: 获取当前页
                     XHR.getArticlesByPageIdx(page_idx, articleProc.displayArticles);
-                    pagi_div.show();
+                    pagiWidget.show();
                 }
             });
 
@@ -157,7 +156,7 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
                         articleNd.remove();
                     }
                     dialog_del.modal('hide');
-                    pagi_div.show();
+                    pagiWidget.show();
                     $(this).off('click');
                 });
             });

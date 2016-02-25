@@ -533,7 +533,7 @@ function _sendArticles(sql, data, resCalbk) {
  * @return {[type]} [description]
  */
 function _queryOrder() {
-    return ' ORDER BY article_date_created DESC';
+    return ' ORDER BY article_date_modified DESC';
 }
 
 /**

@@ -25,7 +25,7 @@ define(['jquery', 'mkEditor', 'runtime', 'exports'], function(jquery, mkEditor, 
     /**
      * Display multiple articles
      * @param  {Array} list [description]
-     * @return {[type]}              [description]
+     * @return {[type]}  [description]
      */
     function _displayArticles(list) {
         var parent = $('#content-wrap'),

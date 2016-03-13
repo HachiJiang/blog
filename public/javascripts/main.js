@@ -27,16 +27,19 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
 
         $(function() {
 
-            var content_div = $('#content-wrap'),
+            var primary_div = $('#primary'),
+                content_div = $('#content-wrap'),
                 sec_div = $('#secondary'),
-                pagiWidget = new PagiWidget(),
-                dialog_del = $('#isDel');
-
-            var cat_id_cur, tag_id_cur, page_idx_cur;
+                dialog_del = $('#isDel'),
+                pagiWidget;
 
             /* Render articles */
             XHR.getArticlesByPageIdx(0, articleProc.displayArticles);
-            XHR.getPageCount(pagiWidget);
+            XHR.getPageTotal(function(pageTotal) {
+                pagiWidget = new PagiWidget(primary_div, pageTotal);
+                pagiWidget.setCurPage(1);
+                pagiWidget.show();
+            });
             /* Render sidebars */
             XHR.getCategories(widgetProc.displayCategories);
             XHR.getTags(widgetProc.displayTags);
@@ -86,6 +89,14 @@ require(['jquery', 'bootstrap'], function(jquery, bootstrap) {
 
                 XHR.getArticlesByCatId(cat_id, page_idx, articleProc.displayArticles);
                 widgetProc.updateFilterNd(this);
+            });
+
+            // 分页模块
+            primary_div.on('click', '.pagi-item', function() {
+                if (this.hasAttribute('active') !== false) {
+                    return;
+                }
+                pagiWidget.setCurPage(parseInt($(this).find('a').text()));
             });
 
             /* 编辑权限部分 */

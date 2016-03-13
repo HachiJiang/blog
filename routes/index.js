@@ -97,8 +97,8 @@ router.get(version + '/articles/year/:year/month/:month/page/:page_idx', functio
 });
 
 /* GET page total count */
-router.get(version + '/article/getPageCount', function(req, res) {
-    model.getPageCount(function(err, json_str) {
+router.get(version + '/articles/getPageTotal', function(req, res) {
+    model.getPageTotal(function(err, json_str) {
         res.send(json_str);
     });
 });

@@ -65,15 +65,15 @@ define(['jquery', 'exports'], function($, exports) {
     /**
      * 获取文章总页数
      */
-    exports.getPageCount = function getPageCount(cb) {
+    exports.getPageTotal = function getPageTotal(cb) {
         $.ajax({
             type: "GET",
-            url: _version + "/article/getPageCount",
+            url: _version + "/articles/getPageTotal",
             dataType: "json",
             success: function(res) {
                 if (res.success === true) {
                     // 成功获取页数，执行回调函数
-                    cb(pageCountTotal);
+                    cb(res.data.pageTotal);
                 } else {
                     console.log(res.message);
                 }

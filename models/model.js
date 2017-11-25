@@ -2,7 +2,7 @@ var mysql = require('mysql');
 var async = require('async');
 var db = require('./db');
 var pool = mysql.createPool(db.setting);
-var unit = 3; // article count in each page
+var unit = 10; // article count in each page
 var map_limit = 10; // map limit count
 var sql_tpl_artciles = 'SELECT tbl_articles.article_id as article_id,article_title,category_name,article_date_created,article_date_modified,user_name,status_name,article_content_raw,article_content,article_statistics FROM tbl_articles LEFT JOIN (tbl_categories) ON (tbl_articles.category_id=tbl_categories.category_id) LEFT JOIN (tbl_users) ON (tbl_articles.user_id=tbl_users.user_id) JOIN tbl_status ON (tbl_articles.status_id=tbl_status.status_id)';
 
